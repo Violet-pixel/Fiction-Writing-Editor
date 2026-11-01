@@ -1,0 +1,79 @@
+Fontes incluídas no Pluma (subconjunto latino, WOFF2), distribuídas pelo projeto Fontsource a partir do Google Fonts.
+
+Lora — OFL-1.1
+Merriweather — OFL-1.1
+EB Garamond — OFL-1.1
+Libre Baskerville — OFL-1.1
+Crimson Text — OFL-1.1
+Crimson Pro — OFL-1.1
+Playfair Display — OFL-1.1
+Cormorant Garamond — OFL-1.1
+Spectral — OFL-1.1
+Source Serif 4 — OFL-1.1
+PT Serif — OFL-1.1
+Noto Serif — OFL-1.1
+Libre Caslon Text — OFL-1.1
+Literata — OFL-1.1
+Alegreya — OFL-1.1
+Vollkorn — OFL-1.1
+Cardo — OFL-1.1
+Old Standard TT — OFL-1.1
+Gentium Book Plus — OFL-1.1
+Bitter — OFL-1.1
+Domine — OFL-1.1
+Zilla Slab — OFL-1.1
+Roboto Slab — Apache-2.0
+Newsreader — OFL-1.1
+Gelasio — OFL-1.1
+IM Fell English — OFL-1.1
+Inter — OFL-1.1
+Open Sans — OFL-1.1
+Lato — OFL-1.1
+Roboto — OFL-1.1
+Nunito — OFL-1.1
+Poppins — OFL-1.1
+Montserrat — OFL-1.1
+Raleway — OFL-1.1
+Work Sans — OFL-1.1
+Source Sans 3 — OFL-1.1
+Atkinson Hyperlegible — OFL-1.1
+Lexend — OFL-1.1
+Quicksand — OFL-1.1
+Karla — OFL-1.1
+DM Sans — OFL-1.1
+Fira Sans — OFL-1.1
+PT Sans — OFL-1.1
+Josefin Sans — OFL-1.1
+Comfortaa — OFL-1.1
+Courier Prime — OFL-1.1
+Special Elite — Apache-2.0
+IBM Plex Mono — OFL-1.1
+JetBrains Mono — OFL-1.1
+Space Mono — OFL-1.1
+Cutive Mono — OFL-1.1
+Caveat — OFL-1.1
+Dancing Script — OFL-1.1
+Indie Flower — OFL-1.1
+Patrick Hand — OFL-1.1
+Shadows Into Light — OFL-1.1
+Kalam — OFL-1.1
+Satisfy — Apache-2.0
+Great Vibes — OFL-1.1
+Gloria Hallelujah — OFL-1.1
+Architects Daughter — OFL-1.1
+Homemade Apple — Apache-2.0
+Sacramento — OFL-1.1
+Parisienne — OFL-1.1
+Cinzel — OFL-1.1
+Uncial Antiqua — OFL-1.1
+MedievalSharp — OFL-1.1
+Pirata One — OFL-1.1
+UnifrakturMaguntia — OFL-1.1
+Creepster — OFL-1.1
+Orbitron — OFL-1.1
+Audiowide — OFL-1.1
+Press Start 2P — OFL-1.1
+VT323 — OFL-1.1
+Amatic SC — OFL-1.1
+Lobster — OFL-1.1
+Pacifico — OFL-1.1

@@ -1,0 +1,332 @@
+[
+  {
+    "text": "",
+    "expected": {
+      "words": 0,
+      "characters": 0,
+      "charactersNoSpaces": 0,
+      "paragraphs": 0,
+      "sentences": 0,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Olá",
+    "expected": {
+      "words": 1,
+      "characters": 3,
+      "charactersNoSpaces": 3,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Olá, mundo.",
+    "expected": {
+      "words": 2,
+      "characters": 11,
+      "charactersNoSpaces": 10,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "guarda-chuva d'água 3,5",
+    "expected": {
+      "words": 3,
+      "characters": 23,
+      "charactersNoSpaces": 21,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "—Olá! — disse ela.",
+    "expected": {
+      "words": 3,
+      "characters": 18,
+      "charactersNoSpaces": 15,
+      "paragraphs": 1,
+      "sentences": 2,
+      "dialogues": 1
+    }
+  },
+  {
+    "text": "...",
+    "expected": {
+      "words": 0,
+      "characters": 3,
+      "charactersNoSpaces": 3,
+      "paragraphs": 1,
+      "sentences": 0,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Ele saiu. Ela ficou.\nFim",
+    "expected": {
+      "words": 5,
+      "characters": 23,
+      "charactersNoSpaces": 20,
+      "paragraphs": 2,
+      "sentences": 3,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "  \n\n  ",
+    "expected": {
+      "words": 0,
+      "characters": 4,
+      "charactersNoSpaces": 0,
+      "paragraphs": 0,
+      "sentences": 0,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Espera... o quê?! Não!",
+    "expected": {
+      "words": 4,
+      "characters": 22,
+      "charactersNoSpaces": 19,
+      "paragraphs": 1,
+      "sentences": 3,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "“Você vem?” Ela não respondeu.",
+    "expected": {
+      "words": 5,
+      "characters": 30,
+      "charactersNoSpaces": 26,
+      "paragraphs": 1,
+      "sentences": 2,
+      "dialogues": 1
+    }
+  },
+  {
+    "text": "- Vamos embora.\n— Agora?\n« Sim »",
+    "expected": {
+      "words": 4,
+      "characters": 30,
+      "charactersNoSpaces": 25,
+      "paragraphs": 3,
+      "sentences": 3,
+      "dialogues": 3
+    }
+  },
+  {
+    "text": "A casa\tamarela e verde.",
+    "expected": {
+      "words": 5,
+      "characters": 23,
+      "charactersNoSpaces": 19,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Ação, reação; emoção: coração.",
+    "expected": {
+      "words": 4,
+      "characters": 30,
+      "charactersNoSpaces": 27,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Um 2 três",
+    "expected": {
+      "words": 3,
+      "characters": 9,
+      "charactersNoSpaces": 7,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Fim.\r\nNovo parágrafo.",
+    "expected": {
+      "words": 3,
+      "characters": 19,
+      "charactersNoSpaces": 18,
+      "paragraphs": 2,
+      "sentences": 2,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Ele disse: \"Pare.\" E parou.",
+    "expected": {
+      "words": 5,
+      "characters": 27,
+      "charactersNoSpaces": 23,
+      "paragraphs": 1,
+      "sentences": 2,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "(Assim.) E depois?",
+    "expected": {
+      "words": 3,
+      "characters": 18,
+      "charactersNoSpaces": 16,
+      "paragraphs": 1,
+      "sentences": 2,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "日本語のテキスト。",
+    "expected": {
+      "words": 1,
+      "characters": 9,
+      "charactersNoSpaces": 9,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Ελληνικά κείμενο.",
+    "expected": {
+      "words": 2,
+      "characters": 17,
+      "charactersNoSpaces": 16,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Ufa…\nUfa… de novo…",
+    "expected": {
+      "words": 4,
+      "characters": 17,
+      "charactersNoSpaces": 15,
+      "paragraphs": 2,
+      "sentences": 3,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Nada",
+    "expected": {
+      "words": 1,
+      "characters": 4,
+      "charactersNoSpaces": 4,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "a.b.c",
+    "expected": {
+      "words": 1,
+      "characters": 5,
+      "charactersNoSpaces": 5,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Sr. Silva chegou.",
+    "expected": {
+      "words": 3,
+      "characters": 17,
+      "charactersNoSpaces": 15,
+      "paragraphs": 1,
+      "sentences": 2,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Palavra—palavra–palavra―palavra",
+    "expected": {
+      "words": 4,
+      "characters": 31,
+      "charactersNoSpaces": 31,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": " Recuo com espaço largo.",
+    "expected": {
+      "words": 4,
+      "characters": 24,
+      "charactersNoSpaces": 20,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "×÷ ×",
+    "expected": {
+      "words": 0,
+      "characters": 4,
+      "charactersNoSpaces": 3,
+      "paragraphs": 1,
+      "sentences": 0,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Ele gritou!!! E correu???",
+    "expected": {
+      "words": 4,
+      "characters": 25,
+      "charactersNoSpaces": 22,
+      "paragraphs": 1,
+      "sentences": 2,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "— Fala sem ponto",
+    "expected": {
+      "words": 3,
+      "characters": 16,
+      "charactersNoSpaces": 13,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 1
+    }
+  },
+  {
+    "text": "123 456.",
+    "expected": {
+      "words": 2,
+      "characters": 8,
+      "charactersNoSpaces": 7,
+      "paragraphs": 1,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  },
+  {
+    "text": "Linha 1\n\nLinha 3\n",
+    "expected": {
+      "words": 4,
+      "characters": 14,
+      "charactersNoSpaces": 12,
+      "paragraphs": 2,
+      "sentences": 1,
+      "dialogues": 0
+    }
+  }
+]

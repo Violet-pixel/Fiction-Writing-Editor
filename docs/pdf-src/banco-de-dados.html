@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Serifa — Banco de dados</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body data-doc="Banco de dados">
+<div id="logo" hidden><img src="../images/logo.svg" alt=""></div>
+
+<div id="fonte">
+
+<!-- ================= CAPA ================= -->
+<div class="capa capa-conteudo">
+  <div class="capa-logo"><img src="../images/logo.svg" alt="Logo do Serifa"></div>
+  <div class="capa-texto">
+    <h1>Serifa</h1>
+    <p class="subtitulo">Banco de dados</p>
+    <p class="resumo">Por que PostgreSQL no servidor e IndexedDB no navegador, diagrama de relacionamentos, tabelas,
+      object stores, revisões, concorrência otimista, consultas prontas, backup e restauração, integridade e segurança
+      e preparação do PostgreSQL.</p>
+    <p class="creditos">Copyright (©) 2026 Clara Portes (Violet-pixel)<br>
+      Versão online: <a href="https://violet-pixel.github.io/Fiction-Writing-Editor/">https://violet-pixel.github.io/Fiction-Writing-Editor/</a></p>
+  </div>
+  <div class="capa-versao">Versão 1.0.0 · Novembro de 2026 · Todos os direitos reservados</div>
+  <div class="capa-faixa"><span style="background:#1e252c"></span><span style="background:#f4f1de"></span><span style="background:#b0a08c"></span><span style="background:#b8c9a9"></span><span style="background:#8395a7"></span><span style="background:#d8a7b1"></span><span style="background:#9c4a5b"></span></div>
+</div>
+
+<div id="sumario"></div>
+
+<!-- ================= 1. VISÃO GERAL ================= -->
+<section class="capitulo">
+  <h1>Visão geral</h1>
+  <p>O Serifa guarda <strong>somente o que a pessoa escreve</strong> (projetos, capítulos, notas e revisões) e as
+    <strong>preferências</strong> do editor. As mesmas entidades existem em dois lugares, conforme a maneira de abrir o
+    programa:</p>
+  <table>
+    <thead><tr><th>Como o Serifa foi aberto</th><th>Onde os dados ficam</th><th>Quem grava</th></tr></thead>
+    <tbody>
+      <tr><td>Site no GitHub Pages</td><td>IndexedDB do navegador (banco <code>serifa</code>)</td><td>O próprio editor, em JavaScript</td></tr>
+      <tr><td><code>visualizar.bat</code> (servidor local pelo PowerShell)</td><td>IndexedDB do navegador (banco <code>serifa</code>)</td><td>O próprio editor, em JavaScript</td></tr>
+      <tr><td>Servidor Java com a API</td><td>PostgreSQL, ou arquivos JSON em <code>SERIFA_DATA</code> quando não há banco configurado</td><td>A API (<code>/api/v1/projects</code>)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Por que PostgreSQL no modo servidor</h2>
+  <ul>
+    <li><strong>Transações de verdade.</strong> Salvar um projeto troca o projeto, os capítulos e grava uma revisão numa
+      única transação: ou tudo entra, ou nada entra. Nunca fica um capítulo pela metade.</li>
+    <li><strong>Regras no próprio banco.</strong> Chaves estrangeiras, <code>CHECK</code> e índices únicos barram dados
+      inválidos mesmo que um cliente com defeito tente gravá-los.</li>
+    <li><strong>Texto longo e JSON nativos.</strong> <code>text</code> guarda capítulos inteiros sem limite prático e
+      <code>jsonb</code> guarda o documento <code>.serifa</code> de cada revisão já validado e consultável.</li>
+    <li><strong>Backup simples.</strong> <code>pg_dump</code> gera uma cópia consistente com o servidor ligado
+      (capítulo 9).</li>
+    <li><strong>Sem dependência de compilação.</strong> O servidor carrega o driver JDBC por reflexão; sem
+      <code>SERIFA_DB_URL</code>, ele usa arquivos JSON e funciona do mesmo jeito.</li>
+  </ul>
+
+  <h2>Por que IndexedDB no navegador</h2>
+  <p>No GitHub Pages e no <code>visualizar.bat</code> não há servidor de aplicação: só arquivos estáticos. O IndexedDB
+    é o banco que todo navegador moderno já traz, por isso o Serifa funciona sem instalar nada:</p>
+  <ul>
+    <li>guarda centenas de megabytes (bem mais que o <code>localStorage</code>), suficiente para muitos livros e
+      revisões;</li>
+    <li>é transacional e assíncrono: o salvamento automático não trava a digitação;</li>
+    <li>tem índices (<code>projetoId</code>) para listar os capítulos e as revisões de um projeto sem ler tudo;</li>
+    <li>os dados ficam <strong>no computador</strong>, presos à origem do site; nada é enviado para a internet.</li>
+  </ul>
+  <div class="nota"><b>Importante.</b> Cada origem tem o seu próprio IndexedDB. O que foi escrito no site do GitHub
+    Pages não aparece no <code>visualizar.bat</code> (que abre em <code>http://localhost</code>) e vice-versa. Para levar
+    um projeto de um para o outro, use <strong>Arquivo › Salvar como</strong> (<code>.serifa</code>) e
+    <strong>Arquivo › Abrir</strong>.</div>
+
+  <h2>Áreas do modelo</h2>
+  <table>
+    <thead><tr><th>Área</th><th>Tabelas</th><th>Guarda</th></tr></thead>
+    <tbody>
+      <tr><td>Escrita</td><td><code>projeto</code>, <code>capitulo</code></td><td>O livro ou fanfic, a configuração de página e cada capítulo com HTML, notas e status</td></tr>
+      <tr><td>Histórico</td><td><code>revisao</code></td><td>Cópia completa do projeto a cada salvamento (até 50 por projeto)</td></tr>
+      <tr><td>Revisão de texto</td><td><code>dicionario_pessoal</code>, <code>ideia_ignorada</code></td><td>Palavras aceitas pelo corretor e balões de ideia que a pessoa mandou ignorar</td></tr>
+      <tr><td>Estatísticas</td><td><code>sessao_escrita</code>, <code>exportacao</code></td><td>Palavras escritas por sessão (meta diária) e registro das exportações</td></tr>
+      <tr><td>Interface</td><td><code>preferencia</code></td><td>Tema, corretor e balões ligados ou desligados, modo foco e outras opções</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Modo servidor sem PostgreSQL</h2>
+  <p>Quando <code>SERIFA_DB_URL</code> não está definida, o servidor Java grava cada projeto como um arquivo JSON
+    (o mesmo formato <code>.serifa</code>) na pasta <code>SERIFA_DATA</code> (padrão <code>./dados-servidor</code>), com
+    gravação atômica: escreve num arquivo temporário e só depois troca pelo definitivo. As revisões ficam numa
+    subpasta por projeto, com o mesmo limite de 50. As regras deste documento valem para os dois modos; o PostgreSQL
+    acrescenta as garantias do próprio banco.</p>
+</section>
+
+<!-- ================= 2. DIAGRAMA ================= -->
+<section class="capitulo">
+  <h1>Diagrama de relacionamentos</h1>
+  <p>Tudo gira em torno de <code>projeto</code>. Apagar um projeto apaga, em cascata, os capítulos, as revisões, as
+    palavras do dicionário daquele projeto, as ideias ignoradas, as sessões e o registro de exportações.
+    <code>preferencia</code> é independente: vale para o editor inteiro.</p>
+  <figure class="diagrama">
+<svg viewBox="0 0 722 430" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans Mono, Consolas, monospace" role="img" aria-label="Diagrama de relacionamentos do banco do Serifa">
+<path d="M262,144.5 C239.0,144.5 239.0,51.5 216,51.5" fill="none" stroke="#5d1c16" stroke-width="1"/>
+<text x="257" y="141.5" font-size="6.6" fill="#5d1c16" text-anchor="end">1</text>
+<text x="221" y="48.5" font-size="6.6" fill="#5d1c16" text-anchor="start">N</text>
+<path d="M262,144.5 C239.0,144.5 239.0,225.5 216,225.5" fill="none" stroke="#5d1c16" stroke-width="1"/>
+<text x="257" y="141.5" font-size="6.6" fill="#5d1c16" text-anchor="end">1</text>
+<text x="221" y="222.5" font-size="6.6" fill="#5d1c16" text-anchor="start">N</text>
+<path d="M262,144.5 C239.0,144.5 239.0,357.5 216,357.5" fill="none" stroke="#5d1c16" stroke-width="1"/>
+<text x="257" y="141.5" font-size="6.6" fill="#5d1c16" text-anchor="end">1</text>
+<text x="221" y="354.5" font-size="6.6" fill="#5d1c16" text-anchor="start">N</text>
+<path d="M458,144.5 C482.0,144.5 482.0,51.5 506,51.5" fill="none" stroke="#5d1c16" stroke-width="1"/>
+<text x="463" y="141.5" font-size="6.6" fill="#5d1c16" text-anchor="start">1</text>
+<text x="501" y="48.5" font-size="6.6" fill="#5d1c16" text-anchor="end">N</text>
+<path d="M458,144.5 C482.0,144.5 482.0,152.5 506,152.5" fill="none" stroke="#5d1c16" stroke-width="1"/>
+<text x="463" y="141.5" font-size="6.6" fill="#5d1c16" text-anchor="start">1</text>
+<text x="501" y="149.5" font-size="6.6" fill="#5d1c16" text-anchor="end">N</text>
+<path d="M458,144.5 C482.0,144.5 482.0,252.5 506,252.5" fill="none" stroke="#5d1c16" stroke-width="1"/>
+<text x="463" y="141.5" font-size="6.6" fill="#5d1c16" text-anchor="start">1</text>
+<text x="501" y="249.5" font-size="6.6" fill="#5d1c16" text-anchor="end">N</text>
+<path d="M20,38.5 H12 V238.5 H20" fill="none" stroke="#7a6e46" stroke-width="1" stroke-dasharray="3 2"/>
+<path d="M20,38.5 H6 V370.5 H20" fill="none" stroke="#7a6e46" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="24" y="247.5" font-size="0"></text>
+<g><rect x="20" y="14" width="196" height="139" fill="#ffffff" stroke="#2b1d17" stroke-width="1"/>
+<rect x="20" y="14" width="196" height="18" fill="#2b1d17"/>
+<text x="27" y="26.5" fill="#ffffff" font-size="9.6" font-weight="700">capitulo</text>
+<text x="27" y="41.5" font-size="8" fill="#2b1d17">id</text>
+<text x="132" y="41.5" font-size="7.2" fill="#8a7b70">uuid</text>
+<text x="209" y="41.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">PK</text>
+<rect x="21" y="46" width="194" height="13" fill="#faf6ef"/>
+<text x="27" y="54.5" font-size="8" fill="#2b1d17">projeto_id</text>
+<text x="132" y="54.5" font-size="7.2" fill="#8a7b70">uuid</text>
+<text x="209" y="54.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">FK</text>
+<text x="27" y="67.5" font-size="8" fill="#2b1d17">titulo</text>
+<text x="132" y="67.5" font-size="7.2" fill="#8a7b70">varchar(300)</text>
+<rect x="21" y="72" width="194" height="13" fill="#faf6ef"/>
+<text x="27" y="80.5" font-size="8" fill="#2b1d17">posicao</text>
+<text x="132" y="80.5" font-size="7.2" fill="#8a7b70">integer</text>
+<text x="209" y="80.5" font-size="6.6" font-weight="700" fill="#5c4034" text-anchor="end">UK</text>
+<text x="27" y="93.5" font-size="8" fill="#2b1d17">html</text>
+<text x="132" y="93.5" font-size="7.2" fill="#8a7b70">text</text>
+<rect x="21" y="98" width="194" height="13" fill="#faf6ef"/>
+<text x="27" y="106.5" font-size="8" fill="#2b1d17">notas</text>
+<text x="132" y="106.5" font-size="7.2" fill="#8a7b70">text</text>
+<text x="27" y="119.5" font-size="8" fill="#2b1d17">status</text>
+<text x="132" y="119.5" font-size="7.2" fill="#8a7b70">varchar(10)</text>
+<rect x="21" y="124" width="194" height="13" fill="#faf6ef"/>
+<text x="27" y="132.5" font-size="8" fill="#2b1d17">palavras</text>
+<text x="132" y="132.5" font-size="7.2" fill="#8a7b70">integer</text>
+<text x="27" y="145.5" font-size="8" fill="#2b1d17">atualizado_em</text>
+<text x="132" y="145.5" font-size="7.2" fill="#8a7b70">timestamptz</text>
+</g>
+<g><rect x="20" y="188" width="196" height="113" fill="#ffffff" stroke="#2b1d17" stroke-width="1"/>
+<rect x="20" y="188" width="196" height="18" fill="#2b1d17"/>
+<text x="27" y="200.5" fill="#ffffff" font-size="9.6" font-weight="700">sessao_escrita</text>
+<text x="27" y="215.5" font-size="8" fill="#2b1d17">id</text>
+<text x="132" y="215.5" font-size="7.2" fill="#8a7b70">bigserial</text>
+<text x="209" y="215.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">PK</text>
+<rect x="21" y="220" width="194" height="13" fill="#faf6ef"/>
+<text x="27" y="228.5" font-size="8" fill="#2b1d17">projeto_id</text>
+<text x="132" y="228.5" font-size="7.2" fill="#8a7b70">uuid</text>
+<text x="209" y="228.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">FK</text>
+<text x="27" y="241.5" font-size="8" fill="#2b1d17">capitulo_id</text>
+<text x="132" y="241.5" font-size="7.2" fill="#8a7b70">uuid</text>
+<text x="209" y="241.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">FK</text>
+<rect x="21" y="246" width="194" height="13" fill="#faf6ef"/>
+<text x="27" y="254.5" font-size="8" fill="#2b1d17">inicio</text>
+<text x="132" y="254.5" font-size="7.2" fill="#8a7b70">timestamptz</text>
+<text x="27" y="267.5" font-size="8" fill="#2b1d17">fim</text>
+<text x="132" y="267.5" font-size="7.2" fill="#8a7b70">timestamptz</text>
+<rect x="21" y="272" width="194" height="13" fill="#faf6ef"/>
+<text x="27" y="280.5" font-size="8" fill="#2b1d17">palavras_inicio</text>
+<text x="132" y="280.5" font-size="7.2" fill="#8a7b70">integer</text>
+<text x="27" y="293.5" font-size="8" fill="#2b1d17">palavras_fim</text>
+<text x="132" y="293.5" font-size="7.2" fill="#8a7b70">integer</text>
+</g>
+<g><rect x="20" y="320" width="196" height="100" fill="#ffffff" stroke="#2b1d17" stroke-width="1"/>
+<rect x="20" y="320" width="196" height="18" fill="#2b1d17"/>
+<text x="27" y="332.5" fill="#ffffff" font-size="9.6" font-weight="700">exportacao</text>
+<text x="27" y="347.5" font-size="8" fill="#2b1d17">id</text>
+<text x="132" y="347.5" font-size="7.2" fill="#8a7b70">bigserial</text>
+<text x="209" y="347.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">PK</text>
+<rect x="21" y="352" width="194" height="13" fill="#faf6ef"/>
+<text x="27" y="360.5" font-size="8" fill="#2b1d17">projeto_id</text>
+<text x="132" y="360.5" font-size="7.2" fill="#8a7b70">uuid</text>
+<text x="209" y="360.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">FK</text>
+<text x="27" y="373.5" font-size="8" fill="#2b1d17">capitulo_id</text>
+<text x="132" y="373.5" font-size="7.2" fill="#8a7b70">uuid</text>
+<text x="209" y="373.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">FK</text>
+<rect x="21" y="378" width="194" height="13" fill="#faf6ef"/>
+<text x="27" y="386.5" font-size="8" fill="#2b1d17">formato</text>
+<text x="132" y="386.5" font-size="7.2" fill="#8a7b70">varchar(10)</text>
+<text x="27" y="399.5" font-size="8" fill="#2b1d17">tamanho</text>
+<text x="132" y="399.5" font-size="7.2" fill="#8a7b70">integer</text>
+<rect x="21" y="404" width="194" height="13" fill="#faf6ef"/>
+<text x="27" y="412.5" font-size="8" fill="#2b1d17">criado_em</text>
+<text x="132" y="412.5" font-size="7.2" fill="#8a7b70">timestamptz</text>
+</g>
+<g><rect x="262" y="120" width="196" height="178" fill="#ffffff" stroke="#2b1d17" stroke-width="1"/>
+<rect x="262" y="120" width="196" height="18" fill="#2b1d17"/>
+<text x="269" y="132.5" fill="#ffffff" font-size="9.6" font-weight="700">projeto</text>
+<text x="269" y="147.5" font-size="8" fill="#2b1d17">id</text>
+<text x="374" y="147.5" font-size="7.2" fill="#8a7b70">uuid</text>
+<text x="451" y="147.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">PK</text>
+<rect x="263" y="152" width="194" height="13" fill="#faf6ef"/>
+<text x="269" y="160.5" font-size="8" fill="#2b1d17">titulo</text>
+<text x="374" y="160.5" font-size="7.2" fill="#8a7b70">varchar(300)</text>
+<text x="269" y="173.5" font-size="8" fill="#2b1d17">autor</text>
+<text x="374" y="173.5" font-size="7.2" fill="#8a7b70">varchar(200)</text>
+<rect x="263" y="178" width="194" height="13" fill="#faf6ef"/>
+<text x="269" y="186.5" font-size="8" fill="#2b1d17">idioma</text>
+<text x="374" y="186.5" font-size="7.2" fill="#8a7b70">varchar(20)</text>
+<text x="269" y="199.5" font-size="8" fill="#2b1d17">modo_formato</text>
+<text x="374" y="199.5" font-size="7.2" fill="#8a7b70">varchar(10)</text>
+<rect x="263" y="204" width="194" height="13" fill="#faf6ef"/>
+<text x="269" y="212.5" font-size="8" fill="#2b1d17">tamanho_pagina</text>
+<text x="374" y="212.5" font-size="7.2" fill="#8a7b70">varchar(12)</text>
+<text x="269" y="225.5" font-size="8" fill="#2b1d17">orientacao</text>
+<text x="374" y="225.5" font-size="7.2" fill="#8a7b70">varchar(10)</text>
+<rect x="263" y="230" width="194" height="13" fill="#faf6ef"/>
+<text x="269" y="238.5" font-size="8" fill="#2b1d17">margens</text>
+<text x="374" y="238.5" font-size="7.2" fill="#8a7b70">varchar(10)</text>
+<text x="269" y="251.5" font-size="8" fill="#2b1d17">meta_diaria</text>
+<text x="374" y="251.5" font-size="7.2" fill="#8a7b70">integer</text>
+<rect x="263" y="256" width="194" height="13" fill="#faf6ef"/>
+<text x="269" y="264.5" font-size="8" fill="#2b1d17">documento</text>
+<text x="374" y="264.5" font-size="7.2" fill="#8a7b70">jsonb</text>
+<text x="269" y="277.5" font-size="8" fill="#2b1d17">criado_em</text>
+<text x="374" y="277.5" font-size="7.2" fill="#8a7b70">timestamptz</text>
+<rect x="263" y="282" width="194" height="13" fill="#faf6ef"/>
+<text x="269" y="290.5" font-size="8" fill="#2b1d17">atualizado_em</text>
+<text x="374" y="290.5" font-size="7.2" fill="#8a7b70">timestamptz</text>
+</g>
+<g><rect x="506" y="14" width="196" height="100" fill="#ffffff" stroke="#2b1d17" stroke-width="1"/>
+<rect x="506" y="14" width="196" height="18" fill="#2b1d17"/>
+<text x="513" y="26.5" fill="#ffffff" font-size="9.6" font-weight="700">revisao</text>
+<text x="513" y="41.5" font-size="8" fill="#2b1d17">id</text>
+<text x="618" y="41.5" font-size="7.2" fill="#8a7b70">bigserial</text>
+<text x="695" y="41.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">PK</text>
+<rect x="507" y="46" width="194" height="13" fill="#faf6ef"/>
+<text x="513" y="54.5" font-size="8" fill="#2b1d17">projeto_id</text>
+<text x="618" y="54.5" font-size="7.2" fill="#8a7b70">uuid</text>
+<text x="695" y="54.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">FK</text>
+<text x="513" y="67.5" font-size="8" fill="#2b1d17">numero</text>
+<text x="618" y="67.5" font-size="7.2" fill="#8a7b70">integer</text>
+<text x="695" y="67.5" font-size="6.6" font-weight="700" fill="#5c4034" text-anchor="end">UK</text>
+<rect x="507" y="72" width="194" height="13" fill="#faf6ef"/>
+<text x="513" y="80.5" font-size="8" fill="#2b1d17">documento</text>
+<text x="618" y="80.5" font-size="7.2" fill="#8a7b70">jsonb</text>
+<text x="513" y="93.5" font-size="8" fill="#2b1d17">tamanho</text>
+<text x="618" y="93.5" font-size="7.2" fill="#8a7b70">integer</text>
+<rect x="507" y="98" width="194" height="13" fill="#faf6ef"/>
+<text x="513" y="106.5" font-size="8" fill="#2b1d17">criado_em</text>
+<text x="618" y="106.5" font-size="7.2" fill="#8a7b70">timestamptz</text>
+</g>
+<g><rect x="506" y="128" width="196" height="74" fill="#ffffff" stroke="#2b1d17" stroke-width="1"/>
+<rect x="506" y="128" width="196" height="18" fill="#2b1d17"/>
+<text x="513" y="140.5" fill="#ffffff" font-size="9.6" font-weight="700">ideia_ignorada</text>
+<text x="513" y="155.5" font-size="8" fill="#2b1d17">projeto_id</text>
+<text x="618" y="155.5" font-size="7.2" fill="#8a7b70">uuid</text>
+<text x="695" y="155.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">PK FK</text>
+<rect x="507" y="160" width="194" height="13" fill="#faf6ef"/>
+<text x="513" y="168.5" font-size="8" fill="#2b1d17">regra</text>
+<text x="618" y="168.5" font-size="7.2" fill="#8a7b70">varchar(100)</text>
+<text x="695" y="168.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">PK</text>
+<text x="513" y="181.5" font-size="8" fill="#2b1d17">trecho</text>
+<text x="618" y="181.5" font-size="7.2" fill="#8a7b70">varchar(500)</text>
+<text x="695" y="181.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">PK</text>
+<rect x="507" y="186" width="194" height="13" fill="#faf6ef"/>
+<text x="513" y="194.5" font-size="8" fill="#2b1d17">criado_em</text>
+<text x="618" y="194.5" font-size="7.2" fill="#8a7b70">timestamptz</text>
+</g>
+<g><rect x="506" y="228" width="196" height="61" fill="#ffffff" stroke="#2b1d17" stroke-width="1"/>
+<rect x="506" y="228" width="196" height="18" fill="#2b1d17"/>
+<text x="513" y="240.5" fill="#ffffff" font-size="9.6" font-weight="700">dicionario_pessoal</text>
+<text x="513" y="255.5" font-size="8" fill="#2b1d17">projeto_id</text>
+<text x="618" y="255.5" font-size="7.2" fill="#8a7b70">uuid</text>
+<text x="695" y="255.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">PK FK</text>
+<rect x="507" y="260" width="194" height="13" fill="#faf6ef"/>
+<text x="513" y="268.5" font-size="8" fill="#2b1d17">palavra</text>
+<text x="618" y="268.5" font-size="7.2" fill="#8a7b70">varchar(100)</text>
+<text x="695" y="268.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">PK</text>
+<text x="513" y="281.5" font-size="8" fill="#2b1d17">criado_em</text>
+<text x="618" y="281.5" font-size="7.2" fill="#8a7b70">timestamptz</text>
+</g>
+<g><rect x="506" y="330" width="196" height="61" fill="#ffffff" stroke="#2b1d17" stroke-width="1"/>
+<rect x="506" y="330" width="196" height="18" fill="#2b1d17"/>
+<text x="513" y="342.5" fill="#ffffff" font-size="9.6" font-weight="700">preferencia</text>
+<text x="513" y="357.5" font-size="8" fill="#2b1d17">chave</text>
+<text x="618" y="357.5" font-size="7.2" fill="#8a7b70">varchar(100)</text>
+<text x="695" y="357.5" font-size="6.6" font-weight="700" fill="#5d1c16" text-anchor="end">PK</text>
+<rect x="507" y="362" width="194" height="13" fill="#faf6ef"/>
+<text x="513" y="370.5" font-size="8" fill="#2b1d17">valor</text>
+<text x="618" y="370.5" font-size="7.2" fill="#8a7b70">jsonb</text>
+<text x="513" y="383.5" font-size="8" fill="#2b1d17">atualizado_em</text>
+<text x="618" y="383.5" font-size="7.2" fill="#8a7b70">timestamptz</text>
+</g>
+<g font-size="7" fill="#5c4c44"><line x1="262" y1="420" x2="282" y2="420" stroke="#5d1c16"/><text x="287" y="422.5">obrigatória (CASCADE)</text><line x1="400" y1="420" x2="420" y2="420" stroke="#7a6e46" stroke-dasharray="3 2"/><text x="425" y="422.5">opcional (SET NULL)</text></g>
+</svg>
+    <figcaption>projeto 1:N capitulo · projeto 1:N revisao · projeto 1:N sessao_escrita · projeto 1:N exportacao ·
+      projeto 1:N ideia_ignorada · projeto 1:N dicionario_pessoal · capitulo 0..1:N sessao_escrita / exportacao (SET NULL)</figcaption>
+  </figure>
+  <table class="compacta">
+    <thead><tr><th>Relação</th><th>Cardinalidade</th><th>Ao apagar o pai</th></tr></thead>
+    <tbody>
+      <tr><td><code>capitulo.projeto_id</code> → <code>projeto.id</code></td><td>1 projeto : N capítulos</td><td><code>ON DELETE CASCADE</code></td></tr>
+      <tr><td><code>revisao.projeto_id</code> → <code>projeto.id</code></td><td>1 : N (máx. 50 guardadas)</td><td><code>ON DELETE CASCADE</code></td></tr>
+      <tr><td><code>dicionario_pessoal.projeto_id</code> → <code>projeto.id</code></td><td>1 : N</td><td><code>ON DELETE CASCADE</code></td></tr>
+      <tr><td><code>ideia_ignorada.projeto_id</code> → <code>projeto.id</code></td><td>1 : N</td><td><code>ON DELETE CASCADE</code></td></tr>
+      <tr><td><code>sessao_escrita.projeto_id</code> → <code>projeto.id</code></td><td>1 : N</td><td><code>ON DELETE CASCADE</code></td></tr>
+      <tr><td><code>sessao_escrita.capitulo_id</code> → <code>capitulo.id</code></td><td>0..1 : N</td><td><code>ON DELETE SET NULL</code></td></tr>
+      <tr><td><code>exportacao.projeto_id</code> → <code>projeto.id</code></td><td>1 : N</td><td><code>ON DELETE CASCADE</code></td></tr>
+      <tr><td><code>exportacao.capitulo_id</code> → <code>capitulo.id</code></td><td>0..1 : N</td><td><code>ON DELETE SET NULL</code></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ================= 3. CONVENÇÕES ================= -->
+<section class="capitulo">
+  <h1>Regras e convenções</h1>
+  <h2>Convenções do modelo</h2>
+  <ul>
+    <li><strong>Nomes em português, <code>snake_case</code></strong> e no singular: <code>capitulo</code>,
+      <code>sessao_escrita</code>, <code>atualizado_em</code>.</li>
+    <li><strong><code>uuid</code> para o que nasce no navegador</strong> (<code>projeto</code>, <code>capitulo</code>):
+      o editor cria o identificador sem falar com o servidor, então um projeto feito no GitHub Pages pode ser enviado
+      para a API mais tarde sem trocar de id.</li>
+    <li><strong><code>bigserial</code></strong> para registros auxiliares (revisões,
+      sessões, exportações, dicionário).</li>
+    <li><strong>Datas sempre em <code>timestamptz</code></strong> (UTC no banco; o editor mostra no fuso local).
+      Para agrupar por dia, use <code>inicio::date</code> (ou <code>inicio AT TIME ZONE 'America/Sao_Paulo'</code>).</li>
+    <li><strong>Valores fixos com <code>CHECK</code></strong> em vez de tipos <code>ENUM</code>: adicionar um formato
+      novo é só trocar a restrição, sem migração de tipo.</li>
+    <li><strong>Os mesmos valores do arquivo <code>.serifa</code></strong>: <code>rascunho</code>, <code>revisao</code>,
+      <code>pronto</code>; <code>livro</code>, <code>wattpad</code>, <code>ao3</code>; <code>a4</code>,
+      <code>livro-6x9</code> etc.</li>
+  </ul>
+
+  <h2>Integridade</h2>
+  <table>
+    <thead><tr><th>Regra</th><th>Como o banco garante</th></tr></thead>
+    <tbody>
+      <tr><td>Todo capítulo pertence a um projeto</td><td><code>capitulo.projeto_id NOT NULL</code> + chave estrangeira</td></tr>
+      <tr><td>Dois capítulos não ocupam a mesma posição</td><td><code>UNIQUE (projeto_id, posicao) DEFERRABLE INITIALLY DEFERRED</code>: permite reordenar todos numa transação</td></tr>
+      <tr><td>Título nunca vazio</td><td><code>CHECK (length(btrim(titulo)) &gt; 0)</code></td></tr>
+      <tr><td>Status, formato, folha e margens conhecidos</td><td><code>CHECK (... IN (...))</code> em <code>modo_formato</code>, <code>tamanho_pagina</code>, <code>orientacao</code>, <code>margens</code>, <code>status</code> e <code>formato</code></td></tr>
+      <tr><td>Contadores nunca negativos</td><td><code>CHECK (palavras &gt;= 0)</code>, <code>CHECK (meta_diaria &gt;= 0)</code>, <code>CHECK (tamanho &gt;= 0)</code></td></tr>
+      <tr><td>Revisão única por número</td><td><code>UNIQUE (projeto_id, numero)</code></td></tr>
+      <tr><td>Projeto sempre no formato certo</td><td><code>CHECK (documento -&gt;&gt; 'format' = 'serifa')</code> em <code>projeto</code></td></tr>
+      <tr><td>Palavra do dicionário sem repetição</td><td><code>PRIMARY KEY (projeto_id, palavra)</code> + índice único <code>(projeto_id, lower(palavra))</code></td></tr>
+      <tr><td>Ideia ignorada uma vez só</td><td><code>PRIMARY KEY (projeto_id, regra, trecho)</code></td></tr>
+      <tr><td>Datas coerentes</td><td><code>CHECK (atualizado_em &gt;= criado_em)</code> em <code>projeto</code></td></tr>
+      <tr><td>Sessão termina depois de começar</td><td><code>CHECK (fim IS NULL OR fim &gt;= inicio)</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Exclusões em cascata</h2>
+  <p>Apagar um projeto (<code>DELETE /api/v1/projects/{id}</code> ou <strong>Excluir projeto</strong> na lista de
+    projetos) remove tudo o que é dele. Apagar um capítulo mantém as sessões e exportações, com
+    <code>capitulo_id</code> nulo (<code>ON DELETE SET NULL</code>).</p>
+  <div class="nota"><b>Vínculos preservados.</b> A cada salvamento, o servidor atualiza os capítulos no lugar
+    (<code>INSERT ... ON CONFLICT (id) DO UPDATE</code>) e apaga só os que saíram do projeto, então sessões e
+    exportações continuam ligadas aos capítulos que ainda existem.</div>
+
+  <h2>Validação antes de gravar</h2>
+  <ol class="passos">
+    <li>A API confere o corpo: JSON válido, até 10 MB, <code>format = "serifa"</code> e <code>version = 1</code>.</li>
+    <li>O HTML de cada capítulo passa pelo sanitizador (só os blocos e marcações da especificação; nada de
+      <code>script</code>, eventos <code>on*</code> ou links <code>javascript:</code>).</li>
+    <li>A contagem de palavras usa o mesmo contador do editor, que dá o mesmo resultado em JavaScript, Java e C.</li>
+    <li>Só então abre a transação, grava e cria a revisão (capítulo 6).</li>
+  </ol>
+</section>
+
+<!-- ================= 4. TABELAS ================= -->
+<section class="capitulo">
+  <h1>Tabelas</h1>
+  <p>Conforme <code>server/src/main/resources/db/schema.sql</code> (PostgreSQL). Na coluna Nulo, "sim" indica que o
+    campo aceita <code>NULL</code>. Todas as tabelas são criadas com <code>CREATE TABLE IF NOT EXISTS</code>, então
+    o arquivo pode ser aplicado de novo sem erro.</p>
+  <h2>projeto</h2>
+  <p>Um livro, conto ou fanfic. <code>documento</code> guarda o projeto <code>.serifa</code> inteiro e é a fonte da
+    verdade; as outras colunas são cópias para consulta e para os checks.</p>
+  <table class="campos">
+    <thead><tr><th>Campo</th><th>Tipo</th><th>Nulo</th><th>Descrição</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code> <span class="etq">PK</span></td><td><code>uuid</code></td><td>não</td><td>Chave primária, gerada pelo editor</td></tr>
+      <tr><td><code>titulo</code></td><td><code>varchar(300)</code></td><td>não</td><td>Título; <code>CHECK (length(btrim(titulo)) &gt; 0)</code></td></tr>
+      <tr><td><code>autor</code></td><td><code>varchar(200)</code></td><td>não</td><td>Pseudônimo opcional; padrão <code>''</code> (vazio = sem autor)</td></tr>
+      <tr><td><code>idioma</code></td><td><code>varchar(20)</code></td><td>não</td><td>Padrão <code>pt-BR</code></td></tr>
+      <tr><td><code>modo_formato</code></td><td><code>varchar(10)</code></td><td>não</td><td><code>livro</code> (padrão), <code>wattpad</code> ou <code>ao3</code></td></tr>
+      <tr><td><code>tamanho_pagina</code></td><td><code>varchar(12)</code></td><td>não</td><td><code>a4</code>, <code>a5</code> (padrão), <code>carta</code>, <code>oficio</code>, <code>livro-6x9</code>, <code>bolso-5x8</code>, <code>b5</code></td></tr>
+      <tr><td><code>orientacao</code></td><td><code>varchar(10)</code></td><td>não</td><td><code>retrato</code> (padrão) ou <code>paisagem</code></td></tr>
+      <tr><td><code>margens</code></td><td><code>varchar(10)</code></td><td>não</td><td><code>normal</code> (padrão), <code>estreita</code>, <code>moderada</code>, <code>larga</code>, <code>espelhada</code></td></tr>
+      <tr><td><code>meta_diaria</code></td><td><code>integer</code></td><td>não</td><td>Palavras por dia; padrão 1000; <code>CHECK (meta_diaria &gt;= 0)</code></td></tr>
+      <tr><td><code>documento</code></td><td><code>jsonb</code></td><td>não</td><td>Projeto completo; <code>CHECK (documento -&gt;&gt; 'format' = 'serifa')</code></td></tr>
+      <tr><td><code>versao</code></td><td><code>integer</code></td><td>não</td><td>Concorrência otimista; padrão 1, sobe a cada gravação; <code>CHECK (versao &gt;= 1)</code></td></tr>
+      <tr><td><code>criado_em</code></td><td><code>timestamptz</code></td><td>não</td><td>Criação (padrão <code>now()</code>)</td></tr>
+      <tr><td><code>atualizado_em</code></td><td><code>timestamptz</code></td><td>não</td><td>Último salvamento (padrão <code>now()</code>)</td></tr>
+    </tbody>
+  </table>
+  <p class="pequeno"><b>Índices:</b> <code>projeto_pkey (id)</code>, <code>projeto_atualizado_idx (atualizado_em DESC)</code>
+    para a lista "Projetos recentes". <b>Checks:</b> os de cada coluna e <code>atualizado_em &gt;= criado_em</code>.
+    Folha, fonte, entrelinha, recuo e símbolo de cena ficam só em <code>documento -&gt; 'settings'</code>.</p>
+  <div class="nota"><b>Serifa para Windows.</b> O <code>Serifa.exe</code> usa o mesmo IndexedDB (na janela própria, em
+    <code>%AppData%\Serifa\janela</code>) e grava, além disso, arquivos comuns: o <code>.serifa</code> de cada história e as
+    exportações ficam em <code>&lt;pasta base&gt;\&lt;folder&gt;\</code>, e a pasta base fica em
+    <code>%AppData%\Serifa\config.json</code> (<code>base</code>, <code>criarPasta</code>, <code>salvarAuto</code>).
+    Nenhuma tabela nova é necessária no servidor: <code>folder</code> viaja dentro de <code>documento</code>.</div>
+  <div class="nota"><b>Descrição da história.</b> A descrição opcional (sinopse, fandom, avisos) fica em
+    <code>documento -&gt;&gt; 'description'</code> (até 2.000 caracteres, vazia quando não há). Para listar as histórias
+    com a descrição: <code>SELECT titulo, documento -&gt;&gt; 'description' AS descricao FROM projeto ORDER BY
+    atualizado_em DESC;</code></div>
+  <div class="nota"><b>Coluna versao.</b> <code>versao integer NOT NULL DEFAULT 1 CHECK (versao &gt;= 1)</code> sobe 1 a
+    cada gravação e é a base da concorrência otimista (capítulo 7).</div>
+  <h2>capitulo</h2>
+  <p>Cada capítulo do projeto, na ordem do painel de capítulos. O texto fica como HTML sanitizado.</p>
+  <table class="campos">
+    <thead><tr><th>Campo</th><th>Tipo</th><th>Nulo</th><th>Descrição</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code> <span class="etq">PK</span></td><td><code>uuid</code></td><td>não</td><td>Chave primária, gerada pelo editor</td></tr>
+      <tr><td><code>projeto_id</code> <span class="etq fk">FK</span></td><td><code>uuid</code></td><td>não</td><td>Projeto dono (<code>ON DELETE CASCADE</code>)</td></tr>
+      <tr><td><code>titulo</code></td><td><code>varchar(300)</code></td><td>não</td><td>Nome do capítulo (padrão vazio; não entra no corpo exportado)</td></tr>
+      <tr><td><code>posicao</code> <span class="etq uk">UK</span></td><td><code>integer</code></td><td>não</td><td>Ordem, começando em 0; <code>CHECK (posicao &gt;= 0)</code></td></tr>
+      <tr><td><code>html</code></td><td><code>text</code></td><td>não</td><td>Conteúdo sanitizado (padrão vazio); um parágrafo pode levar a classe de estilo <code>estilo-pensamento</code>, <code>estilo-flashback</code>, <code>estilo-mensagem</code>, <code>estilo-carta</code> ou <code>estilo-nota</code> (outras classes são descartadas)</td></tr>
+      <tr><td><code>notas</code></td><td><code>text</code></td><td>não</td><td>Anotações do capítulo, nunca exportadas</td></tr>
+      <tr><td><code>status</code></td><td><code>varchar(10)</code></td><td>não</td><td><code>rascunho</code> (padrão), <code>revisao</code> ou <code>pronto</code></td></tr>
+      <tr><td><code>palavras</code></td><td><code>integer</code></td><td>não</td><td>Contagem de palavras; padrão 0; <code>CHECK (palavras &gt;= 0)</code></td></tr>
+      <tr><td><code>atualizado_em</code></td><td><code>timestamptz</code></td><td>não</td><td>Última alteração (padrão <code>now()</code>)</td></tr>
+    </tbody>
+  </table>
+  <p class="pequeno"><b>Chaves e índices:</b> <code>UNIQUE (projeto_id, posicao) DEFERRABLE INITIALLY DEFERRED</code>
+    (reordenar todos numa transação), <code>capitulo_projeto_idx (projeto_id, posicao)</code>.</p>
+  <h2>revisao</h2>
+  <p>Fotografia completa do projeto a cada salvamento, para voltar atrás. O servidor mantém as 50 últimas.</p>
+  <table class="campos">
+    <thead><tr><th>Campo</th><th>Tipo</th><th>Nulo</th><th>Descrição</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code> <span class="etq">PK</span></td><td><code>bigserial</code></td><td>não</td><td>Identidade gerada pelo banco</td></tr>
+      <tr><td><code>projeto_id</code> <span class="etq fk">FK</span> <span class="etq uk">UK</span></td><td><code>uuid</code></td><td>não</td><td>Projeto (<code>ON DELETE CASCADE</code>)</td></tr>
+      <tr><td><code>numero</code> <span class="etq uk">UK</span></td><td><code>integer</code></td><td>não</td><td>Sequência no projeto (maior + 1); <code>CHECK (numero &gt; 0)</code></td></tr>
+      <tr><td><code>documento</code></td><td><code>jsonb</code></td><td>não</td><td>Projeto inteiro no formato <code>.serifa</code></td></tr>
+      <tr><td><code>tamanho</code></td><td><code>integer</code></td><td>não</td><td>Tamanho do documento; <code>CHECK (tamanho &gt;= 0)</code></td></tr>
+      <tr><td><code>criado_em</code></td><td><code>timestamptz</code></td><td>não</td><td>Quando a revisão foi feita (padrão <code>now()</code>)</td></tr>
+    </tbody>
+  </table>
+  <p class="pequeno"><b>Chaves e índices:</b> <code>UNIQUE (projeto_id, numero)</code>,
+    <code>revisao_projeto_idx (projeto_id, numero DESC)</code>.</p>
+  <h2>dicionario_pessoal</h2>
+  <p>Palavras que a pessoa adicionou ao dicionário do projeto (nomes de personagens, lugares, termos inventados).
+    A comparação não diferencia maiúsculas.</p>
+  <table class="campos">
+    <thead><tr><th>Campo</th><th>Tipo</th><th>Nulo</th><th>Descrição</th></tr></thead>
+    <tbody>
+      <tr><td><code>projeto_id</code> <span class="etq">PK</span> <span class="etq fk">FK</span></td><td><code>uuid</code></td><td>não</td><td>Projeto (<code>ON DELETE CASCADE</code>)</td></tr>
+      <tr><td><code>palavra</code> <span class="etq">PK</span></td><td><code>varchar(100)</code></td><td>não</td><td>A palavra; <code>CHECK (length(btrim(palavra)) &gt; 0)</code></td></tr>
+      <tr><td><code>criado_em</code></td><td><code>timestamptz</code></td><td>não</td><td>Quando foi adicionada (padrão <code>now()</code>)</td></tr>
+    </tbody>
+  </table>
+  <p class="pequeno"><b>Chaves e índices:</b> <code>PRIMARY KEY (projeto_id, palavra)</code> e índice único
+    <code>dicionario_pessoal_lower_idx (projeto_id, lower(palavra))</code>, que impede "Elara" e "elara" no mesmo projeto.</p>
+  <h2>ideia_ignorada</h2>
+  <p>Balões de ideia que a pessoa mandou ignorar. No <code>.serifa</code> é a lista <code>ignored</code> com textos
+    <code>regra:trecho</code>; aqui as duas partes ficam em colunas separadas.</p>
+  <table class="campos">
+    <thead><tr><th>Campo</th><th>Tipo</th><th>Nulo</th><th>Descrição</th></tr></thead>
+    <tbody>
+      <tr><td><code>projeto_id</code> <span class="etq">PK</span> <span class="etq fk">FK</span></td><td><code>uuid</code></td><td>não</td><td>Projeto (<code>ON DELETE CASCADE</code>)</td></tr>
+      <tr><td><code>regra</code> <span class="etq">PK</span></td><td><code>varchar(100)</code></td><td>não</td><td>Id da regra, ex.: <code>pleonasmo-subir-para-cima</code></td></tr>
+      <tr><td><code>trecho</code> <span class="etq">PK</span></td><td><code>varchar(500)</code></td><td>não</td><td>Trecho do texto, ex.: <code>subiu para cima</code></td></tr>
+      <tr><td><code>criado_em</code></td><td><code>timestamptz</code></td><td>não</td><td>Quando foi ignorada (padrão <code>now()</code>)</td></tr>
+    </tbody>
+  </table>
+  <p class="pequeno"><b>Chave:</b> <code>PRIMARY KEY (projeto_id, regra, trecho)</code>.</p>
+  <h2>sessao_escrita</h2>
+  <p>Cada período de escrita. Alimenta "palavras da sessão", a meta diária e as estatísticas por dia
+    (<code>inicio::date</code>).</p>
+  <table class="campos">
+    <thead><tr><th>Campo</th><th>Tipo</th><th>Nulo</th><th>Descrição</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code> <span class="etq">PK</span></td><td><code>bigserial</code></td><td>não</td><td>Identidade</td></tr>
+      <tr><td><code>projeto_id</code> <span class="etq fk">FK</span></td><td><code>uuid</code></td><td>não</td><td>Projeto (<code>ON DELETE CASCADE</code>)</td></tr>
+      <tr><td><code>capitulo_id</code> <span class="etq fk">FK</span></td><td><code>uuid</code></td><td>sim</td><td>Capítulo da sessão (<code>ON DELETE SET NULL</code>)</td></tr>
+      <tr><td><code>inicio</code></td><td><code>timestamptz</code></td><td>não</td><td>Começo da sessão</td></tr>
+      <tr><td><code>fim</code></td><td><code>timestamptz</code></td><td>sim</td><td>Fim (nulo enquanto a sessão está aberta)</td></tr>
+      <tr><td><code>palavras_inicio</code></td><td><code>integer</code></td><td>não</td><td>Total de palavras ao começar; padrão 0; <code>&gt;= 0</code></td></tr>
+      <tr><td><code>palavras_fim</code></td><td><code>integer</code></td><td>não</td><td>Total ao terminar; padrão 0; <code>&gt;= 0</code></td></tr>
+    </tbody>
+  </table>
+  <p class="pequeno"><b>Índices:</b> <code>sessao_escrita_projeto_idx (projeto_id, inicio DESC)</code>.
+    <b>Checks:</b> <code>fim IS NULL OR fim &gt;= inicio</code>.</p>
+  <h2>exportacao</h2>
+  <p>Registro de cada exportação feita pela API. Não guarda o arquivo gerado: só o que foi exportado e quando.</p>
+  <table class="campos">
+    <thead><tr><th>Campo</th><th>Tipo</th><th>Nulo</th><th>Descrição</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code> <span class="etq">PK</span></td><td><code>bigserial</code></td><td>não</td><td>Identidade</td></tr>
+      <tr><td><code>projeto_id</code> <span class="etq fk">FK</span></td><td><code>uuid</code></td><td>não</td><td>Projeto (<code>ON DELETE CASCADE</code>)</td></tr>
+      <tr><td><code>capitulo_id</code> <span class="etq fk">FK</span></td><td><code>uuid</code></td><td>sim</td><td>Capítulo exportado (<code>ON DELETE SET NULL</code>); nulo = projeto inteiro</td></tr>
+      <tr><td><code>formato</code></td><td><code>varchar(10)</code></td><td>não</td><td><code>wattpad</code>, <code>ao3</code>, <code>txt</code>, <code>md</code>, <code>html</code>, <code>docx</code>, <code>epub</code></td></tr>
+      <tr><td><code>tamanho</code></td><td><code>integer</code></td><td>não</td><td>Tamanho do arquivo gerado; <code>CHECK (tamanho &gt;= 0)</code></td></tr>
+      <tr><td><code>criado_em</code></td><td><code>timestamptz</code></td><td>não</td><td>Quando foi exportado (padrão <code>now()</code>)</td></tr>
+    </tbody>
+  </table>
+  <p class="pequeno"><b>Índices:</b> <code>exportacao_projeto_idx (projeto_id, criado_em DESC)</code>.</p>
+  <h2>preferencia</h2>
+  <p>Preferências da instalação (tema, idioma da interface, atalhos), no formato chave e valor.</p>
+  <table class="campos">
+    <thead><tr><th>Campo</th><th>Tipo</th><th>Nulo</th><th>Descrição</th></tr></thead>
+    <tbody>
+      <tr><td><code>chave</code> <span class="etq">PK</span></td><td><code>varchar(100)</code></td><td>não</td><td>Nome da opção; <code>CHECK (chave ~ '^[a-z0-9._-]+$')</code> (só minúsculas)</td></tr>
+      <tr><td><code>valor</code></td><td><code>jsonb</code></td><td>não</td><td>Valor (texto, número, booleano ou objeto)</td></tr>
+      <tr><td><code>atualizado_em</code></td><td><code>timestamptz</code></td><td>não</td><td>Última mudança (padrão <code>now()</code>)</td></tr>
+    </tbody>
+  </table>
+  <table class="compacta">
+    <thead><tr><th>Chave</th><th>Exemplo de valor</th><th>Para que serve</th></tr></thead>
+    <tbody>
+      <tr><td><code>tema</code></td><td><code>"claro"</code> / <code>"escuro"</code></td><td>Tema da interface (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>)</td></tr>
+      <tr><td><code>corretor</code></td><td><code>true</code></td><td>Corretor ortográfico ligado (<kbd>F7</kbd>)</td></tr>
+      <tr><td><code>ideias</code></td><td><code>true</code></td><td>Balões de ideia ligados (<kbd>Shift</kbd>+<kbd>F7</kbd>)</td></tr>
+      <tr><td><code>ideias.categorias</code></td><td><code>["crase","pleonasmo"]</code></td><td>Categorias de ideia ativas</td></tr>
+      <tr><td><code>ultimo-projeto</code></td><td><code>"uuid"</code></td><td>Projeto reaberto ao iniciar</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ================= 5. INDEXEDDB ================= -->
+<section class="capitulo">
+  <h1>Navegador: IndexedDB</h1>
+  <p>No GitHub Pages e no <code>visualizar.bat</code> o editor abre o banco <code>serifa</code> (versão 1) do
+    IndexedDB. Os <em>object stores</em> têm os mesmos campos das tabelas, com nomes em <code>camelCase</code>, iguais
+    aos do arquivo <code>.serifa</code>.</p>
+  <table>
+    <thead><tr><th>Object store</th><th>Chave</th><th>Índices</th><th>Espelha a tabela</th></tr></thead>
+    <tbody>
+      <tr><td><code>projetos</code></td><td><code>id</code> (uuid)</td><td>—</td><td><code>projeto</code> (+ <code>ideia_ignorada</code> na lista <code>ignored</code>)</td></tr>
+      <tr><td><code>capitulos</code></td><td><code>id</code> (uuid)</td><td><code>projetoId</code></td><td><code>capitulo</code></td></tr>
+      <tr><td><code>revisoes</code></td><td><code>id</code> (autoincremento)</td><td><code>projetoId</code></td><td><code>revisao</code></td></tr>
+      <tr><td><code>dicionario</code></td><td><code>palavra</code> (minúscula)</td><td>—</td><td><code>dicionario_pessoal</code> (geral)</td></tr>
+      <tr><td><code>sessoes</code></td><td><code>dia</code> (<code>AAAA-MM-DD</code>)</td><td>—</td><td><code>sessao_escrita</code> (um registro por dia)</td></tr>
+      <tr><td><code>preferencias</code></td><td><code>chave</code></td><td>—</td><td><code>preferencia</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Como cada store espelha uma tabela</h2>
+  <table class="compacta">
+    <thead><tr><th>Store · campo</th><th>Tabela · coluna</th></tr></thead>
+    <tbody>
+      <tr><td><code>projetos</code> · <code>id, title, description, folder, author, language, createdAt, updatedAt, versao, words, chapterCount</code></td><td><code>projeto</code> · <code>id, titulo, autor, idioma, criado_em, atualizado_em</code> (e <code>versao</code>, capítulo 7); <code>description</code> fica em <code>documento -&gt;&gt; 'description'</code>; <code>words</code> e <code>chapterCount</code> são resumos para a tela Minhas histórias, recalculados a cada gravação</td></tr>
+      <tr><td><code>projetos</code> · <code>folder</code></td><td><code>projeto.documento -&gt;&gt; 'folder'</code>: nome da pasta da história no Serifa para Windows (definido ao criar a história, até 120 caracteres, sem <code>\ / : * ? " &lt; &gt; |</code>)</td></tr>
+      <tr><td><code>projetos</code> · <code>settings</code> (<code>formatMode, pageSize, orientation, margins, paper, fontFamily, fontSize, lineHeight, firstLineIndent, dailyGoal, sceneBreak</code>)</td><td><code>projeto.documento -&gt; 'settings'</code>; cópias em <code>modo_formato</code>, <code>tamanho_pagina</code>, <code>orientacao</code>, <code>margens</code>, <code>meta_diaria</code></td></tr>
+      <tr><td><code>projetos</code> · <code>ignored[]</code>, <code>dictionary[]</code></td><td><code>ideia_ignorada.regra</code> + <code>trecho</code> (o texto <code>regra:trecho</code> dividido), <code>dicionario_pessoal.palavra</code></td></tr>
+      <tr><td><code>capitulos</code> · <code>id, projetoId, title, position, html, notes, status, words, updatedAt</code></td><td><code>capitulo</code> · <code>id, projeto_id, titulo, posicao, html, notas, status, palavras, atualizado_em</code></td></tr>
+      <tr><td><code>capitulos</code> · <code>summary, pov, goal, createdAt</code> (painel do capítulo)</td><td><code>projeto.documento -&gt; 'chapters' -&gt; n</code>: resumo (até 2.000 caracteres), ponto de vista (até 120), meta de palavras do capítulo (0 = sem meta) e data de criação</td></tr>
+      <tr><td><code>revisoes</code> · <code>id, projetoId, documento, palavras, motivo, criadoEm</code></td><td><code>revisao</code> · <code>id, projeto_id, documento, criado_em</code>; <code>palavras</code> e <code>motivo</code> só existem no navegador (lá o documento é o JSON em texto)</td></tr>
+      <tr><td><code>dicionario</code> · <code>palavra, criadoEm</code></td><td>Dicionário geral, só no navegador (no servidor, o dicionário é por projeto)</td></tr>
+      <tr><td><code>sessoes</code> · <code>dia, projetoId, palavrasInicio, palavrasFim, acumulado</code></td><td><code>sessao_escrita</code> · <code>inicio::date, projeto_id, palavras_inicio, palavras_fim</code>; <code>acumulado</code> (só no navegador) soma o que foi escrito em outro projeto no mesmo dia</td></tr>
+      <tr><td><code>preferencias</code> · <code>chave, valor</code> (chaves <code>prefs</code> e <code>lastProject</code>)</td><td><code>preferencia</code> · <code>chave, valor</code> (no servidor, chaves só em minúsculas)</td></tr>
+    </tbody>
+  </table>
+  <div class="nota"><b>Exportações no navegador.</b> Sem servidor, as exportações não são registradas: o arquivo vai
+    direto para a pasta escolhida ou para Downloads. A tabela <code>exportacao</code> só existe no modo servidor.</div>
+
+  <h2>Abertura e atualização do banco</h2>
+<pre>const req = indexedDB.open('serifa', 1);
+req.onupgradeneeded = () =&gt; {
+  const db = req.result;
+  db.createObjectStore('projetos', { keyPath: 'id' });
+  db.createObjectStore('capitulos', { keyPath: 'id' }).createIndex('projetoId', 'projetoId');
+  db.createObjectStore('revisoes', { keyPath: 'id', autoIncrement: true }).createIndex('projetoId', 'projetoId');
+  db.createObjectStore('dicionario', { keyPath: 'palavra' });
+  db.createObjectStore('sessoes', { keyPath: 'dia' });
+  db.createObjectStore('preferencias', { keyPath: 'chave' });
+};</pre>
+  <ul>
+    <li>Salvar um projeto usa <strong>uma transação</strong> <code>readwrite</code> sobre <code>projetos</code>,
+      <code>capitulos</code> e <code>revisoes</code>: os três mudam juntos ou nenhum muda.</li>
+    <li>Uma versão nova do banco (2, 3...) só acrescenta stores e índices dentro de <code>onupgradeneeded</code>;
+      dados existentes nunca são apagados na atualização.</li>
+    <li>Se o navegador bloquear o IndexedDB (janela anônima de alguns navegadores), o editor passa a trabalhar só na
+      memória: nesse caso, salve o <code>.serifa</code> antes de fechar.</li>
+  </ul>
+</section>
+
+<!-- ================= 6. REVISÕES ================= -->
+<section class="capitulo">
+  <h1>Versões e revisões</h1>
+  <h2>Cada salvamento guarda uma revisão</h2>
+  <p>Ao salvar (<kbd>Ctrl</kbd>+<kbd>S</kbd>, salvamento automático ou <code>PUT /api/v1/projects/{id}</code>), o
+    Serifa grava o projeto e, na mesma transação, uma linha em <code>revisao</code> com o documento <code>.serifa</code>
+    completo. São mantidas as <strong>50 revisões mais recentes</strong> de cada projeto; as mais antigas são apagadas
+    no mesmo salvamento.</p>
+  <ol class="passos">
+    <li>Confere a <code>versao</code> esperada (capítulo 7) e incrementa <code>projeto.versao</code>.</li>
+    <li>Grava <code>projeto</code> (<code>INSERT ... ON CONFLICT (id) DO UPDATE</code>), atualiza os capítulos no
+      lugar (<code>ON CONFLICT (id) DO UPDATE</code>) e apaga só os que saíram.</li>
+    <li>Insere a revisão com o próximo <code>numero</code> do projeto (maior número + 1).</li>
+    <li>Apaga o que passou de 50 e faz o <code>COMMIT</code>.</li>
+  </ol>
+<pre><span class="cm">-- poda: mantém só as 50 revisões mais novas do projeto</span>
+DELETE FROM revisao
+ WHERE projeto_id = $1
+   AND numero &lt;= (SELECT max(numero) FROM revisao
+                    WHERE projeto_id = $1) - 50;</pre>
+  <p>O texto é gravado no navegador enquanto você escreve. Para não encher o histórico com revisões quase iguais,
+    a revisão automática é criada no máximo uma vez a cada 5 minutos de digitação;
+    <kbd>Ctrl</kbd>+<kbd>S</kbd> sempre cria uma. No navegador, a poda das 50 mais recentes é feita logo depois de
+    gravar a revisão nova.</p>
+
+  <h2>Restaurar uma revisão</h2>
+  <ol class="passos">
+    <li>Abra <strong>Arquivo › Revisões</strong> (ou <code>GET /api/v1/projects/{id}/revisions</code>).</li>
+    <li>Escolha a revisão pela data e pelo total de palavras.</li>
+    <li>Clique em <strong>Restaurar</strong>. O projeto atual não é perdido: a restauração é um salvamento novo
+      (com o próximo <code>numero</code>) e a versão anterior continua no histórico.</li>
+  </ol>
+</section>
+
+<!-- ================= 7. CONCORRÊNCIA ================= -->
+<section class="capitulo">
+  <h1>Concorrência otimista</h1>
+  <p>O mesmo projeto pode estar aberto em duas abas ou em dois computadores ligados ao mesmo servidor. Para que um
+    não apague o trabalho do outro sem aviso, cada gravação diz qual <code>versao</code> ela leu. O banco só aceita
+    se ninguém salvou no meio do caminho. A coluna <code>versao</code> já vem no <code>schema.sql</code>.</p>
+<pre>UPDATE projeto
+   SET titulo = $2, ..., versao = versao + 1, atualizado_em = now()
+ WHERE id = $1
+   AND versao = $3          <span class="cm">-- versão que o editor leu</span>
+RETURNING versao;
+
+<span class="cm">-- na gravação com upsert, a mesma condição vai no DO UPDATE:</span>
+INSERT INTO projeto (id, titulo, autor, idioma, documento, versao)
+VALUES ($1, $2, $3, $4, $5::jsonb, 1)
+ON CONFLICT (id) DO UPDATE
+   SET titulo = EXCLUDED.titulo, documento = EXCLUDED.documento,
+       versao = projeto.versao + 1, atualizado_em = now()
+ WHERE projeto.versao = $6
+RETURNING versao;</pre>
+  <table>
+    <thead><tr><th>Situação</th><th>Resultado</th></tr></thead>
+    <tbody>
+      <tr><td>Ninguém salvou desde a leitura</td><td>1 linha atualizada; a API responde <code>200</code> com a <code>versao</code> nova</td></tr>
+      <tr><td>Outra aba ou pessoa salvou antes</td><td>0 linhas; <code>ROLLBACK</code> e a API responde <code>409 Conflict</code> com a versão atual</td></tr>
+      <tr><td>Projeto foi apagado</td><td>0 linhas e o projeto não existe: <code>404</code></td></tr>
+    </tbody>
+  </table>
+  <h2>O que o editor faz num conflito</h2>
+  <ol class="passos">
+    <li>Mostra o aviso "Este projeto foi alterado em outro lugar".</li>
+    <li>Não sobrescreve nada: o texto continua salvo no navegador e a pessoa escolhe recarregar a versão mais nova
+      ou salvar a sua como cópia (<strong>Salvar como</strong>). A versão de cada lado continua nas revisões.</li>
+  </ol>
+  <p>No navegador o mesmo campo <code>versao</code> fica no store <code>projetos</code>: a transação do IndexedDB lê
+    o registro, compara a versão e grava no mesmo passo, o que protege contra duas abas abertas no mesmo projeto.</p>
+</section>
+
+<!-- ================= 8. CONSULTAS ================= -->
+<section class="capitulo">
+  <h1>Consultas prontas</h1>
+  <p>Para rodar no <code>psql</code> ou em qualquer cliente PostgreSQL. Troque <code>:'projeto'</code> pelo id do
+    projeto (no <code>psql</code>: <code>\set projeto '...'</code>).</p>
+
+  <h2>Palavras por dia</h2>
+<pre>SELECT s.inicio::date AS dia,
+       SUM(GREATEST(s.palavras_fim - s.palavras_inicio, 0)) AS palavras,
+       MAX(p.meta_diaria) AS meta,
+       SUM(GREATEST(s.palavras_fim - s.palavras_inicio, 0)) &gt;= MAX(p.meta_diaria) AS meta_batida
+  FROM sessao_escrita s
+  JOIN projeto p ON p.id = s.projeto_id
+ WHERE s.projeto_id = :'projeto'
+   AND s.inicio &gt;= current_date - 30
+ GROUP BY 1
+ ORDER BY 1;</pre>
+
+  <h2>Capítulos por status</h2>
+<pre>SELECT status, COUNT(*) AS capitulos, SUM(palavras) AS palavras
+  FROM capitulo
+ WHERE projeto_id = :'projeto'
+ GROUP BY status
+ ORDER BY array_position(ARRAY['rascunho','revisao','pronto'], status);</pre>
+
+  <h2>Últimas revisões</h2>
+<pre>SELECT numero, criado_em,
+       documento -&gt;&gt; 'title'                     AS titulo,
+       jsonb_array_length(documento -&gt; 'chapters') AS capitulos,
+       tamanho
+  FROM revisao
+ WHERE projeto_id = :'projeto'
+ ORDER BY numero DESC
+ LIMIT 10;</pre>
+
+  <h2>Exportações por formato</h2>
+<pre>SELECT formato, COUNT(*) AS vezes,
+       pg_size_pretty(SUM(tamanho)::bigint) AS volume,
+       MAX(criado_em) AS ultima
+  FROM exportacao
+ WHERE criado_em &gt;= now() - interval '90 days'
+ GROUP BY formato
+ ORDER BY vezes DESC;</pre>
+
+  <h2>Projetos recentes com total de palavras</h2>
+<pre>SELECT p.titulo, p.modo_formato, p.atualizado_em,
+       COUNT(c.id) AS capitulos, COALESCE(SUM(c.palavras), 0) AS palavras
+  FROM projeto p
+  LEFT JOIN capitulo c ON c.projeto_id = p.id
+ GROUP BY p.id
+ ORDER BY p.atualizado_em DESC
+ LIMIT 20;</pre>
+
+  <h2>Espaço ocupado</h2>
+<pre>SELECT relname AS tabela, pg_size_pretty(pg_total_relation_size(relid)) AS tamanho
+  FROM pg_catalog.pg_statio_user_tables
+ ORDER BY pg_total_relation_size(relid) DESC;</pre>
+</section>
+
+<!-- ================= 9. BACKUP ================= -->
+<section class="capitulo">
+  <h1>Backup e restauração</h1>
+  <h2>Modo servidor: pg_dump</h2>
+  <ol class="passos">
+    <li>Gere a cópia com o servidor ligado (o <code>pg_dump</code> lê um retrato consistente):
+      <pre>pg_dump -h localhost -U serifa -d serifa -F c -f serifa-2026-10-28.dump</pre></li>
+    <li>Guarde o arquivo <code>.dump</code> fora do computador (pen drive, nuvem pessoal). Ele contém os textos.</li>
+    <li>Para restaurar num banco vazio:
+      <pre>createdb -h localhost -U postgres -O serifa serifa
+pg_restore -h localhost -U serifa -d serifa --no-owner serifa-2026-10-28.dump</pre></li>
+    <li>Ligue o servidor e confira <code>http://127.0.0.1:8080/api/v1/health</code>.</li>
+  </ol>
+  <div class="dica"><b>Rotina sugerida.</b> Um <code>pg_dump</code> por dia (Agendador de Tarefas do Windows ou
+    <code>cron</code>), guardando os últimos 14. No modo arquivos JSON, basta copiar a pasta <code>SERIFA_DATA</code>.</div>
+
+  <h2>Qualquer modo: exportar .serifa</h2>
+  <p>O arquivo <code>.serifa</code> é o backup mais simples e funciona em qualquer maneira de abrir o Serifa:</p>
+  <ol class="passos">
+    <li>No editor, <strong>Arquivo › Salvar como</strong> (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) e escolha a
+      pasta. No Chrome e no Edge, os próximos <kbd>Ctrl</kbd>+<kbd>S</kbd> gravam no mesmo arquivo.</li>
+    <li>Para restaurar, <strong>Arquivo › Abrir</strong> (<kbd>Ctrl</kbd>+<kbd>O</kbd>) e escolha o
+      <code>.serifa</code>. Se já existir um projeto com o mesmo id, o Serifa pergunta se substitui ou abre como cópia.</li>
+    <li>Pela API: <code>GET /api/v1/projects/{id}</code> devolve o <code>.serifa</code>; <code>POST /api/v1/projects</code>
+      com o arquivo no corpo importa (e já grava a primeira revisão).</li>
+  </ol>
+  <p class="pequeno">O <code>.serifa</code> leva capítulos, notas, configurações, dicionário do projeto e ideias
+    ignoradas. Não leva as revisões antigas nem as sessões de escrita.</p>
+</section>
+
+<!-- ================= 10. SEGURANÇA ================= -->
+<section class="capitulo">
+  <h1>Integridade e segurança</h1>
+  <h2>O que o banco guarda (e o que não guarda)</h2>
+  <table>
+    <thead><tr><th>Guarda</th><th>Não guarda</th></tr></thead>
+    <tbody>
+      <tr><td>Texto dos capítulos, títulos e notas</td><td>Nome real, e-mail, telefone ou endereço</td></tr>
+      <tr><td>Preferências do editor</td><td>Senhas ou contas (o Serifa não tem login)</td></tr>
+      <tr><td>Contagens de palavras e datas das sessões</td><td>Endereço IP, navegador ou localização</td></tr>
+      <tr><td>Autor como <strong>pseudônimo opcional</strong></td><td>Qualquer dado pessoal obrigatório</td></tr>
+    </tbody>
+  </table>
+  <p>Nenhum campo pessoal é obrigatório: <code>projeto.autor</code> aceita nulo e serve só para a capa da exportação
+    (EPUB, Word). Também não há telemetria: nem o editor nem o servidor enviam dados para fora.</p>
+
+  <h2>Proteções no servidor</h2>
+  <ul>
+    <li>O servidor escuta só em <code>127.0.0.1</code> por padrão; para abrir na rede é preciso configurar de propósito.</li>
+    <li>Todas as consultas usam <code>PreparedStatement</code> com parâmetros (nada de SQL montado com texto do usuário).</li>
+    <li>Corpo das requisições limitado a 10 MB; HTML sanitizado antes de gravar (capítulo 3).</li>
+    <li>Cabeçalhos de segurança: Content-Security-Policy, <code>X-Content-Type-Options: nosniff</code>,
+      <code>X-Frame-Options: DENY</code> e <code>Referrer-Policy</code>.</li>
+    <li>A senha do banco vem de variável de ambiente (<code>SERIFA_DB_PASSWORD</code>) e nunca aparece em log.</li>
+  </ul>
+
+  <h2>Usuário do banco com o mínimo de permissões</h2>
+<pre>CREATE ROLE serifa LOGIN PASSWORD 'troque-esta-senha';
+CREATE DATABASE serifa OWNER serifa;
+<span class="cm">-- depois de aplicar o schema.sql, conectado ao banco serifa:</span>
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT USAGE ON SCHEMA public TO serifa;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO serifa;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO serifa;</pre>
+</section>
+
+<!-- ================= 11. PREPARAR ================= -->
+<section class="capitulo">
+  <h1>Preparar o PostgreSQL</h1>
+  <p>Só é necessário para o modo servidor com banco. O site e o <code>visualizar.bat</code> não usam PostgreSQL.</p>
+  <ol class="passos">
+    <li><strong>Instale o PostgreSQL 15 ou mais novo</strong> (no Windows, pelo instalador oficial; no Linux, pelo
+      gerenciador de pacotes). Anote a senha do usuário <code>postgres</code>.</li>
+    <li><strong>Crie o usuário e o banco</strong> do Serifa:
+      <pre>psql -h localhost -U postgres -c "CREATE ROLE serifa LOGIN PASSWORD 'troque-esta-senha';"
+psql -h localhost -U postgres -c "CREATE DATABASE serifa OWNER serifa;"</pre></li>
+    <li><strong>Aplique o esquema</strong> (na raiz do projeto):
+      <pre>psql -h localhost -U serifa -d serifa -f server/src/main/resources/db/schema.sql</pre></li>
+    <li><strong>Baixe o driver JDBC do PostgreSQL</strong> (<code>postgresql-42.x.jar</code>) e deixe-o numa pasta
+      conhecida, por exemplo <code>server/lib/</code>. O servidor não depende dele para compilar.</li>
+    <li><strong>Defina as variáveis de ambiente</strong> (tabela abaixo) no terminal em que o servidor vai rodar.</li>
+    <li><strong>Compile e inicie o servidor</strong> com o driver no classpath (<code>bash server/build.sh</code> ou
+      <code>server\build.cmd</code> antes):
+      <pre>java -cp "server/target/serifa.jar:server/lib/postgresql-42.x.jar" serifa.cli.Main serve
+<span class="cm">rem no Windows o separador é ponto e vírgula:</span>
+java -cp "server\target\serifa.jar;server\lib\postgresql-42.x.jar" serifa.cli.Main serve</pre></li>
+    <li><strong>Confira</strong> <code>http://127.0.0.1:8080/api/v1/health</code>: deve responder
+      <code>{"status":"ok","app":"Serifa",...}</code>.</li>
+  </ol>
+
+  <h2>Variáveis de ambiente</h2>
+  <table>
+    <thead><tr><th>Variável</th><th>Exemplo</th><th>Para que serve</th></tr></thead>
+    <tbody>
+      <tr><td><code>SERIFA_DB_URL</code></td><td><code>jdbc:postgresql://localhost:5432/serifa</code></td><td>Liga o modo PostgreSQL. Sem ela, o servidor usa arquivos JSON</td></tr>
+      <tr><td><code>SERIFA_DB_USER</code></td><td><code>serifa</code></td><td>Usuário do banco</td></tr>
+      <tr><td><code>SERIFA_DB_PASSWORD</code></td><td><code>troque-esta-senha</code></td><td>Senha do usuário (nunca grave no repositório)</td></tr>
+      <tr><td><code>SERIFA_DATA</code></td><td><code>./dados-servidor</code></td><td>Pasta dos arquivos JSON, quando não há banco</td></tr>
+      <tr><td><code>SERIFA_PORT</code></td><td><code>8080</code></td><td>Porta do servidor</td></tr>
+    </tbody>
+  </table>
+  <h3>Windows (PowerShell)</h3>
+<pre>$env:SERIFA_DB_URL = "jdbc:postgresql://localhost:5432/serifa"
+$env:SERIFA_DB_USER = "serifa"
+$env:SERIFA_DB_PASSWORD = "troque-esta-senha"</pre>
+  <h3>Linux e macOS</h3>
+<pre>export SERIFA_DB_URL="jdbc:postgresql://localhost:5432/serifa"
+export SERIFA_DB_USER="serifa"
+export SERIFA_DB_PASSWORD="troque-esta-senha"</pre>
+
+  <h2>Solução de problemas</h2>
+  <table>
+    <thead><tr><th>Sintoma</th><th>O que fazer</th></tr></thead>
+    <tbody>
+      <tr><td>O servidor diz que está usando arquivos JSON</td><td><code>SERIFA_DB_URL</code> não foi definida no mesmo terminal, ou o driver JDBC não está no classpath</td></tr>
+      <tr><td><code>password authentication failed</code></td><td>Confira <code>SERIFA_DB_USER</code> e <code>SERIFA_DB_PASSWORD</code>; teste com <code>psql -U serifa -d serifa</code></td></tr>
+      <tr><td><code>relation "projeto" does not exist</code></td><td>O <code>schema.sql</code> não foi aplicado nesse banco (passo 3)</td></tr>
+      <tr><td><code>409 Conflict</code> ao salvar</td><td>Outra aba salvou antes; veja o capítulo 7</td></tr>
+      <tr><td><code>Connection refused</code></td><td>O PostgreSQL não está rodando ou não escuta na porta 5432</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div>
+<script src="paginar.js"></script>
+</body>
+</html>

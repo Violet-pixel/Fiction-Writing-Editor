@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Serifa — Manual de uso</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body data-doc="Manual de uso">
+<div id="logo" hidden><img src="../images/logo.svg" alt=""></div>
+
+<div id="fonte">
+
+<!-- ================= CAPA ================= -->
+<div class="capa capa-conteudo">
+  <div class="capa-logo"><img src="../images/logo.svg" alt="Logo do Serifa"></div>
+  <div class="capa-texto">
+    <h1>Serifa</h1>
+    <p class="subtitulo">Manual de uso</p>
+    <p class="resumo">Editor de textos para escritores de histórias e fanfics: tutorial de boas-vindas, Minhas histórias,
+      capítulo por capítulo, painel do capítulo, mais de 90 fontes, estilos para fanfic, folhas e layout, corretor ortográfico, balão de ideias, contador de palavras e exportação para o
+      Wattpad, o AO3, Word, EPUB e PDF. Passo a passo, para quem não é técnico.</p>
+    <p class="creditos">Copyright (©) 2026 Clara Portes (Violet-pixel)<br>
+      Versão online: <a href="https://violet-pixel.github.io/Fiction-Writing-Editor/">https://violet-pixel.github.io/Fiction-Writing-Editor/</a></p>
+  </div>
+  <div class="capa-versao">Versão 1.0.0 · Novembro de 2026 · Todos os direitos reservados</div>
+  <div class="capa-faixa"><span style="background:#1e252c"></span><span style="background:#f4f1de"></span><span style="background:#b0a08c"></span><span style="background:#b8c9a9"></span><span style="background:#8395a7"></span><span style="background:#d8a7b1"></span><span style="background:#9c4a5b"></span></div>
+</div>
+
+<div id="sumario"></div>
+
+<!-- ================= 1. O QUE É ================= -->
+<section class="capitulo">
+  <h1>O que é o Serifa</h1>
+  <p>O Serifa é um editor de textos feito para quem escreve histórias, contos, livros e fanfics. Ele funciona no
+    navegador, com a aparência de um editor como o Word: uma faixa de opções no alto, a folha no centro e os
+    capítulos ao lado. A diferença é que ele já vem pronto para a escrita de ficção:</p>
+  <ul>
+    <li><strong>Histórias com nome e descrição</strong>, escritas capítulo por capítulo, com situação, notas e um
+      painel do capítulo que expande.</li>
+    <li><strong>Serifa para Windows</strong> (<code>Serifa.exe</code>): abre em janela própria, maximizada, e salva
+      cada história numa pasta em Downloads.</li>
+    <li><strong>Importar uma pasta</strong> de PDFs ou TXTs como uma história, um capítulo por arquivo, e
+      <strong>exportar todos os capítulos em .zip</strong>.</li>
+    <li><strong>Travessão de diálogo automático</strong> e aspas curvas enquanto você digita.</li>
+    <li><strong>Corretor ortográfico</strong> em português do Brasil e <strong>balão de ideias</strong>, que aponta
+      mistura de tempos verbais, concordância, pleonasmos, crase e outras dicas de estilo.</li>
+    <li><strong>Contador de palavras em tempo real</strong>, com meta diária e estatísticas do texto.</li>
+    <li><strong>Exportação</strong> pronta para colar no Wattpad e no AO3 (Archive of Our Own), além de Word,
+      EPUB, PDF, HTML, Markdown e texto.</li>
+    <li><strong>Privacidade:</strong> o que você escreve fica no seu computador. Nada é enviado para a internet.</li>
+  </ul>
+  <figure class="tela" data-src="tela-principal.png tela-editor.png tela-inicio.png tela-geral.png">
+    <figcaption>A tela do Serifa com um capítulo aberto</figcaption>
+  </figure>
+  <h2>O que você precisa</h2>
+  <table>
+    <thead><tr><th>Item</th><th>Detalhe</th></tr></thead>
+    <tbody>
+      <tr><td>Navegador</td><td>Chrome, Edge, Firefox ou Safari atualizados. No Chrome e no Edge, o <kbd>Ctrl</kbd>+<kbd>S</kbd> também grava o arquivo <code>.serifa</code> na pasta que você escolher</td></tr>
+      <tr><td>Internet</td><td>Só para abrir o site pela primeira vez. Depois de aberto, você escreve sem internet</td></tr>
+      <tr><td>Instalação</td><td>Nenhuma. O <code>visualizar.bat</code> e o servidor Java são opcionais</td></tr>
+    </tbody>
+  </table>
+  <h2>Identidade visual</h2>
+  <p>O nome vem da serifa, o pequeno remate nas pontas das letras, herdado do traço do bico de pena. O logo é um
+    bico de pena desenhado em pixels. A interface usa a mesma paleta do Lume, o projeto irmão de biblioteca de documentos:</p>
+  <div class="paleta">
+    <div><span style="background:#1e252c"></span>Tinta<br>#1e252c</div>
+    <div><span style="background:#f4f1de"></span>Creme<br>#f4f1de</div>
+    <div><span style="background:#b0a08c"></span>Camurça<br>#b0a08c</div>
+    <div><span style="background:#b8c9a9"></span>Sálvia<br>#b8c9a9</div>
+    <div><span style="background:#8395a7"></span>Ardósia<br>#8395a7</div>
+    <div><span style="background:#d8a7b1"></span>Rosa<br>#d8a7b1</div>
+    <div><span style="background:#9c4a5b"></span>Rosa escuro<br>#9c4a5b</div>
+  </div>
+  <p>No tema claro, o creme é o fundo, a tinta marca a barra de título e os botões principais e o rosa escuro
+    destaca o que está ativo. No tema escuro, o fundo é quase preto e o rosa claro assume o destaque.</p>
+</section>
+
+<!-- ================= 2. ABRIR ================= -->
+<section class="capitulo">
+  <h1>Quatro maneiras de abrir</h1>
+  <table>
+    <thead><tr><th>Maneira</th><th>Para quem</th><th>Onde os textos ficam</th></tr></thead>
+    <tbody>
+      <tr><td>1. Site no GitHub Pages</td><td>Quem quer começar agora, sem baixar nada</td><td>No navegador deste computador</td></tr>
+      <tr><td>2. <code>visualizar.bat</code></td><td>Quem baixou o Serifa no Windows e quer usar sem internet</td><td>No navegador deste computador</td></tr>
+      <tr><td>3. Servidor Java</td><td>Quem quer a API, o banco PostgreSQL ou usar em mais de um computador da casa</td><td>No navegador e no servidor</td></tr>
+      <tr><td>4. <code>Serifa.exe</code> (Windows)</td><td>Quem quer o Serifa como um programa, com os arquivos de cada história numa pasta</td><td>Numa pasta por história (Downloads, por padrão) e na própria janela</td></tr>
+    </tbody>
+  </table>
+
+  <h2>1. Pelo site (GitHub Pages)</h2>
+  <ol class="passos">
+    <li>Abra o navegador e entre em <a href="https://violet-pixel.github.io/Fiction-Writing-Editor/">https://violet-pixel.github.io/Fiction-Writing-Editor/</a>.</li>
+    <li>Na primeira vez aparece o <strong>tutorial de boas-vindas</strong>. Clique em <strong>Fazer o tour</strong>
+      para ver cada parte da tela ou em <strong>Pular e começar a escrever</strong>. Ele pode ser aberto de
+      novo no botão <strong>? Ajuda</strong> ou em <strong>Arquivo › Tutorial</strong>.</li>
+    <li>Clique em <strong>Minhas histórias › Nova história</strong>, dê um nome e comece a escrever.</li>
+    <li>Dica: adicione o site aos favoritos. Os textos continuam lá na próxima vez que você abrir o mesmo
+      navegador neste computador.</li>
+  </ol>
+
+  <figure class="tela" data-src="tela-boas-vindas.png">
+    <figcaption>O tutorial de boas-vindas na primeira abertura</figcaption>
+  </figure>
+  <h2>2. Pelo visualizar.bat (Windows)</h2>
+  <ol class="passos">
+    <li>Baixe o Serifa (botão <strong>Code › Download ZIP</strong> na página do projeto no GitHub) e extraia a pasta.</li>
+    <li>Dê <strong>dois cliques</strong> em <code>visualizar.bat</code>.</li>
+    <li>Uma janela preta do PowerShell abre: ela é um pequeno servidor local, só deste computador. Em seguida o
+      navegador abre sozinho em <code>http://localhost:8790</code> (ou na próxima porta livre).</li>
+    <li>Escreva normalmente. <strong>Deixe a janela do PowerShell aberta</strong> enquanto usa o Serifa; para
+      encerrar, feche o navegador e depois a janela.</li>
+  </ol>
+  <div class="nota"><b>Atenção.</b> O site e o <code>visualizar.bat</code> guardam os textos em lugares separados do
+    navegador. Para levar um projeto de um para o outro, use <strong>Arquivo › Salvar como</strong> e depois
+    <strong>Arquivo › Abrir arquivo</strong>.</div>
+  <div class="dica"><b>O Windows mostrou um aviso?</b> Na primeira vez, o Windows pode exibir "O Windows protegeu o
+    computador". Clique em <strong>Mais informações › Executar assim mesmo</strong>. O arquivo só abre o servidor
+    local e o navegador.</div>
+
+  <h2>3. Pelo servidor Java (opcional)</h2>
+  <p>O servidor Java oferece a mesma tela e acrescenta uma API (para contar palavras, revisar e exportar por outros
+    programas) e o armazenamento no servidor, em arquivos ou no PostgreSQL.</p>
+  <ol class="passos">
+    <li>Instale o Java 21 (JDK).</li>
+    <li>Na pasta do Serifa, compile o servidor: <code>server\build.cmd</code> no Windows ou
+      <code>bash server/build.sh</code> no Linux e no macOS.</li>
+    <li>Inicie: <code>java -jar server/target/serifa.jar serve</code> (para outra porta, acrescente
+      <code>--porta 8081</code>).</li>
+    <li>Abra <code>http://127.0.0.1:8080</code> no navegador. Na barra de título aparece onde os textos estão sendo
+      guardados.</li>
+    <li>Para usar o PostgreSQL, veja o documento <strong>Banco-de-Dados-Serifa.pdf</strong>.</li>
+  </ol>
+  <p class="pequeno">Por segurança, o servidor só aceita conexões do próprio computador (127.0.0.1). A porta pode
+    ser trocada pela variável <code>SERIFA_PORT</code>.</p>
+
+  <h2>4. Pelo Serifa.exe (Windows)</h2>
+  <ol class="passos">
+    <li>Baixe o Serifa e dê <strong>dois cliques</strong> em <code>Serifa.exe</code>, na pasta principal. Não precisa
+      instalar nada: ele usa o Microsoft Edge, que já vem no Windows 10 e 11 (ou o Chrome, se o Edge não existir).</li>
+    <li>O Serifa abre numa janela própria, <strong>maximizada</strong> (tela cheia com bordas), sem barra de endereço.</li>
+    <li>Ao criar uma história, o Serifa cria a pasta <code>Downloads\Nome da história</code>. O arquivo
+      <code>.serifa</code> é salvo lá enquanto você escreve, e tudo o que você exportar (Word, EPUB, HTML, texto,
+      .zip…) vai direto para essa pasta, sem perguntar onde salvar.</li>
+    <li>Para trocar a pasta, abra a guia <strong>Configurações</strong> (capítulo 14).</li>
+  </ol>
+  <div class="nota"><b>Primeira vez.</b> O Windows pode mostrar o aviso do SmartScreen ("O Windows protegeu o
+    computador"), porque o arquivo não tem assinatura digital. Clique em <strong>Mais informações › Executar assim
+    mesmo</strong>. O Serifa só escuta o próprio computador (<code>127.0.0.1</code>, porta 8840).</div>
+</section>
+
+<!-- ================= 3. TOUR ================= -->
+<section class="capitulo">
+  <h1>Tour pela tela</h1>
+  <figure class="tela" data-src="tela-tour.png tela-principal-anotada.png">
+    <figcaption>As partes da tela</figcaption>
+  </figure>
+  <table>
+    <thead><tr><th>Parte</th><th>Onde fica</th><th>Para que serve</th></tr></thead>
+    <tbody>
+      <tr><td>Barra de título</td><td>No alto</td><td>Botão <strong>Minhas histórias</strong>, nome da história aberta (clique para renomear), situação do salvamento ("Salvo", "Alterações não salvas"), onde os textos ficam ("Neste navegador"), botão de tema e <strong>? Ajuda</strong> (tutorial)</td></tr>
+      <tr><td>Faixa de opções</td><td>Logo abaixo</td><td>As guias Arquivo, Página Inicial, Inserir, Layout, Revisão, Exibir e Exportar, com os botões agrupados</td></tr>
+      <tr><td>Lateral da história</td><td>À esquerda</td><td>Nome e descrição da história, lista numerada dos capítulos, botão <strong>＋ Novo capítulo</strong>, total de palavras e o <strong>rascunho do capítulo</strong> (situação, notas e o botão <strong>⤢</strong> que expande o painel do capítulo)</td></tr>
+      <tr><td>Painel do capítulo</td><td>À direita, quando expandido</td><td>Resumo, ponto de vista, meta do capítulo, notas grandes, estatísticas e datas</td></tr>
+      <tr><td>Folha</td><td>No centro</td><td>Onde você escreve, com o tamanho, as margens e o tipo de folha escolhidos</td></tr>
+      <tr><td>Balões de ideia</td><td>Na margem direita</td><td>Lâmpadas ao lado das linhas com alguma sugestão</td></tr>
+      <tr><td>Barra de status</td><td>Embaixo</td><td>Página, palavras, caracteres, tempo de leitura, palavras da sessão, meta de hoje, botões <strong>Corretor</strong> e <strong>Ideias</strong> e o modo de formatação</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Tutorial de boas-vindas</h2>
+  <p>O tutorial destaca na tela, uma por vez, as partes mais importantes: Minhas histórias, a história aberta, os
+    capítulos, o rascunho do capítulo, a folha, os estilos, as fontes, os formatos Wattpad e AO3, a exportação e a barra
+    de status.</p>
+  <ol class="passos">
+    <li>Use <strong>Próximo</strong> e <strong>Voltar</strong> (ou as setas <kbd>→</kbd> e <kbd>←</kbd> do teclado).</li>
+    <li>Para sair a qualquer momento, clique em <strong>Pular tutorial</strong> ou pressione <kbd>Esc</kbd>. Depois de
+      pulado ou concluído, ele não aparece sozinho de novo.</li>
+    <li>Para rever, clique em <strong>? Ajuda</strong> no alto da tela ou em <strong>Arquivo › Tutorial</strong>.</li>
+  </ol>
+  <figure class="tela" data-src="tela-tutorial.png">
+    <figcaption>Um passo do tutorial destacando os capítulos</figcaption>
+  </figure>
+
+  <h2>As guias da faixa de opções</h2>
+  <table>
+    <thead><tr><th>Guia</th><th>Grupos</th><th>O que tem</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Arquivo</strong></td><td>História, Salvar, Ajuda</td><td>Nova história, Minhas histórias, Abrir arquivo, Importar pasta; Salvar, Salvar como, Versões; Detalhes, Tutorial, Atalhos</td></tr>
+      <tr><td><strong>Página Inicial</strong></td><td>Área de transferência, Fonte, Parágrafo, Estilos, Editar</td><td>Colar, recortar e copiar; fonte (91 opções), tamanho, negrito, itálico, sublinhado, tachado, subscrito, sobrescrito, cor e realce; listas, recuo, espaçamento e alinhamento; Normal, Título 1/2/3, Citação, Pensamento, Flashback, Mensagem, Carta e Nota do autor; localizar, substituir, desfazer e refazer</td></tr>
+      <tr><td><strong>Inserir</strong></td><td>Quebras, Elementos, Símbolos</td><td>Capítulo, quebra de cena, quebra de página; imagem, tabela, link, data; travessão, reticências, aspas e símbolos</td></tr>
+      <tr><td><strong>Layout</strong></td><td>Configurar página, Folha, Formatação, Texto do livro</td><td>Tamanho, orientação e margens; tipo de folha, recuo da primeira linha e símbolo de cena; modos Livro, Wattpad e AO3 com as linhas em branco dos diálogos; fonte e tamanho do livro</td></tr>
+      <tr><td><strong>Revisão</strong></td><td>Ortografia, Balão de ideias, Ferramentas, AutoCorreção</td><td>Corretor e dicionário pessoal; balão de ideias e categorias; contagem, repetições e meta diária; travessão, aspas curvas e reticências automáticos</td></tr>
+      <tr><td><strong>Exibir</strong></td><td>Tema, Zoom da folha, Interface, Modos</td><td>Claro e escuro; zoom e largura da página; tamanho da interface (75% por padrão); modo foco, máquina de escrever, tela cheia e painel de capítulos</td></tr>
+      <tr><td><strong>Exportar</strong></td><td>Abrangência, Wattpad, AO3, Documentos</td><td>Capítulo atual ou história inteira; copiar para o Wattpad e o AO3; Word, EPUB, PDF, HTML, Markdown, Texto e <code>.serifa</code>; todos os capítulos em <code>.zip</code></td></tr>
+      <tr><td><strong>Configurações</strong></td><td>Onde salvar, Salvamento, Ajuda</td><td>Pasta das histórias, abrir a pasta, voltar para Downloads; criar uma pasta por história e salvar o <code>.serifa</code> enquanto escreve (Serifa para Windows); tutorial, atalhos e detalhes</td></tr>
+    </tbody>
+  </table>
+  <figure class="tela" data-src="tela-faixa.png tela-ribbon.png tela-faixa-inicio.png">
+    <figcaption>A faixa de opções na guia Página Inicial</figcaption>
+  </figure>
+
+  <h2>Barra de status</h2>
+  <p>A barra de baixo se atualiza enquanto você digita: <strong>Página 3 de 12 · 2.418 palavras · 13.902 caracteres ·
+    13 min de leitura · Sessão: 412 · Hoje: 655 / 1000</strong>. Os botões <strong>Corretor</strong> e
+    <strong>Ideias</strong> ligam e desligam o sublinhado vermelho e as lâmpadas. No fim aparece o modo de formatação
+    (Livro, Wattpad ou AO3).</p>
+</section>
+
+<!-- ================= 4. ESCREVER E FORMATAR ================= -->
+<section class="capitulo">
+  <h1>Escrever e formatar</h1>
+  <p>A formatação funciona como no Word: selecione o texto e clique no botão, ou use o atalho. Todos ficam na guia
+    <strong>Página Inicial</strong>.</p>
+  <h2>Fonte</h2>
+  <table>
+    <thead><tr><th>Botão</th><th>O que faz</th><th>Atalho</th></tr></thead>
+    <tbody>
+      <tr><td>Fonte e tamanho</td><td>Abre o seletor com 91 fontes (veja abaixo) e escolhe o tamanho de 8 a 72</td><td>—</td></tr>
+      <tr><td><strong>N</strong> Negrito</td><td>Texto em negrito</td><td><kbd>Ctrl</kbd>+<kbd>B</kbd></td></tr>
+      <tr><td><em>I</em> Itálico</td><td>Texto em itálico (pensamentos, palavras estrangeiras)</td><td><kbd>Ctrl</kbd>+<kbd>I</kbd></td></tr>
+      <tr><td><u>S</u> Sublinhado</td><td>Texto sublinhado</td><td><kbd>Ctrl</kbd>+<kbd>U</kbd></td></tr>
+      <tr><td><s>abc</s> Tachado</td><td>Risca o texto</td><td>—</td></tr>
+      <tr><td>x₂ / x² Subscrito e sobrescrito</td><td>Texto abaixo ou acima da linha (H₂O, 1º)</td><td>—</td></tr>
+      <tr><td>Cor do texto e Realce</td><td>Muda a cor da letra ou pinta o fundo, como marca-texto</td><td>—</td></tr>
+      <tr><td>Limpar formatação</td><td>Volta o trecho selecionado ao texto normal</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <h2>Escolher a fonte</h2>
+  <p>São 91 fontes: as 14 do computador e 77 fontes livres que vêm com o Serifa e funcionam mesmo sem internet.</p>
+  <table class="compacta">
+    <thead><tr><th>Categoria</th><th>Exemplos</th><th>Combina com</th></tr></thead>
+    <tbody>
+      <tr><td>Livro e romance</td><td>Lora, EB Garamond, Literata, Merriweather, Libre Baskerville, Crimson Pro</td><td>O texto da história, leitura longa</td></tr>
+      <tr><td>Modernas e limpas</td><td>Inter, Nunito, Atkinson Hyperlegible, Lexend, Poppins</td><td>Leitura na tela; Atkinson e Lexend ajudam quem tem dificuldade de leitura</td></tr>
+      <tr><td>Máquina de escrever</td><td>Courier Prime, Special Elite, IBM Plex Mono</td><td>Manuscrito para editora, clima antigo</td></tr>
+      <tr><td>Manuscritas</td><td>Caveat, Kalam, Dancing Script, Great Vibes</td><td>Cartas, diários, convites</td></tr>
+      <tr><td>Temáticas</td><td>Cinzel, Uncial Antiqua, MedievalSharp, Creepster, Orbitron, Press Start 2P</td><td>Fantasia, terror, ficção científica, games</td></tr>
+    </tbody>
+  </table>
+  <ol class="passos">
+    <li>Na guia <strong>Página Inicial</strong>, clique no nome da fonte (grupo Fonte).</li>
+    <li>Procure pelo nome ou por um tema ("terror", "cartas"), ou filtre por categoria. Cada fonte aparece escrita nela
+      mesma, com uma frase de exemplo. <strong>Recentes</strong> guarda as últimas que você usou.</li>
+    <li>Clique na fonte. <strong>Sem nada selecionado</strong>, ela vale para a história toda; <strong>com um trecho
+      selecionado</strong>, só para ele. A fonte da história também fica em <strong>Layout › Texto do livro</strong>.</li>
+  </ol>
+  <figure class="tela" data-src="tela-fontes.png">
+    <figcaption>O seletor de fontes na categoria Temáticas</figcaption>
+  </figure>
+  <h2>Parágrafo</h2>
+  <table>
+    <thead><tr><th>Botão</th><th>O que faz</th><th>Atalho</th></tr></thead>
+    <tbody>
+      <tr><td>Alinhar à esquerda, centralizar, à direita, justificar</td><td>Alinhamento do parágrafo</td><td><kbd>Ctrl</kbd>+<kbd>L</kbd>, <kbd>Ctrl</kbd>+<kbd>E</kbd>, <kbd>Ctrl</kbd>+<kbd>R</kbd>, <kbd>Ctrl</kbd>+<kbd>J</kbd></td></tr>
+      <tr><td>Marcadores e numeração</td><td>Listas com • ou 1. 2. 3.</td><td>—</td></tr>
+      <tr><td>Diminuir e aumentar recuo</td><td>Afasta o parágrafo da margem</td><td>—</td></tr>
+      <tr><td>Espaçamento entre linhas</td><td>1,0 · 1,15 · 1,5 · 2,0 · 2,5</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <h2>Estilos</h2>
+  <p>Use os estilos em vez de aumentar a fonte à mão: eles viram títulos de verdade no Word, no EPUB e no AO3.</p>
+  <table class="compacta">
+    <thead><tr><th>Estilo</th><th>Uso</th><th>Atalho</th></tr></thead>
+    <tbody>
+      <tr><td>Normal</td><td>O texto da história</td><td><kbd>Ctrl</kbd>+<kbd>0</kbd></td></tr>
+      <tr><td>Título 1</td><td>Título de parte ou do capítulo dentro do texto</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd></td></tr>
+      <tr><td>Título 2 e Título 3</td><td>Subtítulos, nomes de seção, epígrafes</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>2</kbd> / <kbd>3</kbd></td></tr>
+      <tr><td>Citação</td><td>Trechos de livro, epígrafes, falas destacadas</td><td>—</td></tr>
+      <tr><td><em>Pensamento</em></td><td>O que o personagem pensa, em itálico</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>4</kbd></td></tr>
+      <tr><td><em>Flashback</em></td><td>Lembranças e cenas do passado, em itálico com uma marca na lateral</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>5</kbd></td></tr>
+      <tr><td>Mensagem</td><td>Conversa de celular ou chat em balões, que alternam de lado</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>6</kbd></td></tr>
+      <tr><td>Carta</td><td>Bilhetes, cartas e diários, em letra manuscrita e recuados</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>7</kbd></td></tr>
+      <tr><td>Nota do autor</td><td>Recado para quem lê (avisos, agradecimentos), numa caixa</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>8</kbd></td></tr>
+    </tbody>
+  </table>
+  <p>Coloque o cursor no parágrafo (ou selecione vários) e clique no estilo; clique de novo para tirar. Depois de
+    <kbd>Enter</kbd>, o parágrafo seguinte volta ao Normal, menos na Mensagem, para você emendar uma conversa.</p>
+  <figure class="tela" data-src="tela-estilos.png">
+    <figcaption>Nota do autor, mensagens e flashback num capítulo</figcaption>
+  </figure>
+  <div class="dica"><b>Na exportação:</b> Pensamento e Flashback viram itálico; Mensagem vira negrito centralizado;
+    Carta vira citação; Nota do autor vira itálico centralizado. Assim o Wattpad e o AO3 mostram o trecho destacado.</div>
+  <h2>Localizar e substituir</h2>
+  <ol class="passos">
+    <li>Pressione <kbd>Ctrl</kbd>+<kbd>F</kbd> (localizar) ou <kbd>Ctrl</kbd>+<kbd>H</kbd> (substituir). A barra de
+      busca aparece no alto da folha.</li>
+    <li>Digite o que procura. Use <strong>↑</strong> e <strong>↓</strong> para ir de um resultado ao outro.</li>
+    <li>Para trocar, preencha o campo de substituição e clique em <strong>Substituir</strong> (um) ou
+      <strong>Todos</strong>. Marque <strong>Diferenciar maiúsculas</strong> se precisar.</li>
+    <li>Feche com <strong>✕</strong> ou <kbd>Esc</kbd>.</li>
+  </ol>
+  <figure class="tela" data-src="tela-localizar.png tela-substituir.png tela-busca.png">
+    <figcaption>A barra de localizar e substituir</figcaption>
+  </figure>
+  <div class="dica"><b>Trocou o nome de um personagem?</b> Use <kbd>Ctrl</kbd>+<kbd>H</kbd> com
+    <strong>Diferenciar maiúsculas</strong> marcado e substitua em cada capítulo.</div>
+  <h2>Desfazer e refazer</h2>
+  <p><kbd>Ctrl</kbd>+<kbd>Z</kbd> desfaz a última alteração e <kbd>Ctrl</kbd>+<kbd>Y</kbd> refaz. Os botões
+    <strong>↶</strong> e <strong>↷</strong> ficam no grupo Editar.</p>
+</section>
+
+<!-- ================= 5. TRAVESSÃO ================= -->
+<section class="capitulo">
+  <h1>Travessão e aspas automáticos</h1>
+  <p>No português, o diálogo usa o travessão (—), que não existe no teclado. O Serifa troca sozinho enquanto você
+    digita:</p>
+  <table>
+    <thead><tr><th>Você digita</th><th>Vira</th><th>Quando</th></tr></thead>
+    <tbody>
+      <tr><td><code>--</code></td><td><code>—</code></td><td>Em qualquer lugar do texto</td></tr>
+      <tr><td><code>- </code> (hífen e espaço)</td><td><code>— </code></td><td>No começo do parágrafo: começa uma fala</td></tr>
+      <tr><td><code>"texto"</code></td><td><code>“texto”</code></td><td>Aspas curvas de abertura e fechamento</td></tr>
+      <tr><td><code>'texto'</code> e <code>d'água</code></td><td><code>‘texto’</code> e <code>d’água</code></td><td>Aspas simples e apóstrofo</td></tr>
+      <tr><td><code>...</code></td><td><code>…</code></td><td>Reticências (se estiver ligado)</td></tr>
+    </tbody>
+  </table>
+  <h2>Exemplo</h2>
+<pre>- Você vem? -- perguntou Ana.
+- Não sei... -- respondeu ele.</pre>
+  <p>vira:</p>
+<pre>— Você vem? — perguntou Ana.
+— Não sei… — respondeu ele.</pre>
+  <h2>Ligar e desligar</h2>
+  <ol class="passos">
+    <li>Abra a guia <strong>Revisão</strong>, grupo <strong>AutoCorreção</strong>.</li>
+    <li>Marque ou desmarque <strong>Travessão automático</strong>, <strong>Aspas curvas automáticas</strong> e
+      <strong>Reticências</strong>.</li>
+    <li>Trocou sem querer? Pressione <kbd>Ctrl</kbd>+<kbd>Z</kbd> logo depois: volta o que você digitou.</li>
+  </ol>
+  <p>Na guia <strong>Inserir</strong>, grupo <strong>Símbolos</strong>, também há botões para inserir travessão,
+    reticências, aspas curvas, aspas angulares (« ») e outros símbolos.</p>
+</section>
+
+<!-- ================= 6. HISTÓRIAS E CAPÍTULOS ================= -->
+<section class="capitulo">
+  <h1>Histórias e capítulos</h1>
+  <p>No Serifa, cada <strong>história</strong> tem nome, uma descrição opcional e seus capítulos. Você escreve
+    capítulo por capítulo, e a história guarda a ordem, as notas e o andamento de cada um.</p>
+  <h2>Minhas histórias</h2>
+  <p>Clique em <strong>Minhas histórias</strong> no alto da tela (ou <kbd>Ctrl</kbd>+<kbd>O</kbd>). Cada história
+    aparece como um cartão com a descrição, o formato (Livro, Wattpad ou AO3), o número de capítulos, as palavras e
+    quando foi editada.</p>
+  <figure class="tela" data-src="tela-historias.png">
+    <figcaption>A tela Minhas histórias</figcaption>
+  </figure>
+  <table class="compacta">
+    <thead><tr><th>Para</th><th>Faça</th></tr></thead>
+    <tbody>
+      <tr><td>Abrir uma história</td><td>Clique no cartão</td></tr>
+      <tr><td>Procurar</td><td>Digite no campo <strong>Procurar história</strong> (procura no nome e na descrição)</td></tr>
+      <tr><td>Editar nome e descrição, duplicar, baixar o <code>.serifa</code> ou excluir</td><td>Clique nos três pontinhos <strong>⋯</strong> do cartão</td></tr>
+      <tr><td>Voltar para a escrita</td><td>Clique no <strong>✕</strong> ou pressione <kbd>Esc</kbd></td></tr>
+    </tbody>
+  </table>
+  <h2>Criar uma história</h2>
+  <ol class="passos">
+    <li>Em <strong>Minhas histórias</strong>, clique em <strong>＋ Nova história</strong> (também em
+      <strong>Arquivo › Nova história</strong>).</li>
+    <li>Dê um <strong>nome</strong> à história. A <strong>descrição é opcional</strong>: sinopse, fandom, ship, avisos,
+      o que ajudar você a lembrar.</li>
+    <li>Escolha onde vai publicar (Wattpad, AO3 ou Livro) e clique em <strong>Criar história</strong>. O capítulo 1 já
+      abre na folha.</li>
+  </ol>
+  <figure class="tela" data-src="tela-nova-historia.png">
+    <figcaption>Nova história com nome e descrição</figcaption>
+  </figure>
+  <p>Para mudar o nome ou a descrição depois, clique no lápis <strong>✎</strong> no topo da lateral ou em
+    <strong>Arquivo › Detalhes</strong>.</p>
+  <h2>Importar uma pasta de capítulos</h2>
+  <p>Já escreveu a história em outro lugar, um arquivo por capítulo? Junte os arquivos numa pasta e traga tudo de uma vez.</p>
+  <ol class="passos">
+    <li>Em <strong>Minhas histórias</strong>, clique em <strong>🗂 Importar pasta</strong> (ou <strong>Arquivo ›
+      Importar pasta</strong>) e escolha a pasta. O navegador pode pedir para confirmar o envio dos arquivos: eles não
+      saem do computador.</li>
+    <li>O Serifa reconhece <strong>PDF</strong>, <strong>TXT</strong>, <strong>Markdown</strong> e <strong>Word</strong>,
+      e entende a pasta como uma história: cada arquivo vira um capítulo, na ordem do nome (1, 2, 3… 10).</li>
+    <li>Na <strong>tela de verificação</strong>, confira o nome da história (vem o nome da pasta), escreva uma descrição
+      se quiser, desmarque os arquivos que não são capítulos e ajuste os títulos (o número do começo do nome do arquivo
+      sai sozinho).</li>
+    <li>Se a pasta tiver formatos diferentes (por exemplo, PDF e TXT juntos), aparece um <strong>aviso</strong> em
+      amarelo para você conferir antes. Arquivos de outros formatos (imagens, por exemplo) ficam de fora e são
+      listados.</li>
+    <li>Clique em <strong>Importar capítulos</strong>. A história nova abre no primeiro capítulo.</li>
+  </ol>
+  <figure class="tela" data-src="tela-importar.png">
+    <figcaption>A tela de verificação, com o aviso de formatos misturados</figcaption>
+  </figure>
+  <div class="dica"><b>PDF.</b> O texto do PDF é lido com os parágrafos e as falas. PDFs escaneados (foto da página)
+    não têm texto para importar. Os números de página soltos são descartados.</div>
+  <h2>Adicionar capítulos</h2>
+  <ol class="passos">
+    <li>Clique em <strong>＋ Novo capítulo</strong>, embaixo da lista (ou <kbd>Ctrl</kbd>+<kbd>N</kbd>, ou
+      <strong>Inserir › Capítulo</strong>).</li>
+    <li>O capítulo entra no fim da lista, abre na folha e o título fica selecionado: digite o nome e pressione
+      <kbd>Enter</kbd> para ir direto ao texto.</li>
+    <li>Para pôr um capítulo no meio, use <strong>⋯ › Novo capítulo depois deste</strong>.</li>
+  </ol>
+  <h2>Organizar os capítulos</h2>
+  <p>Cada capítulo da lista mostra o número, o título, a situação (bolinha cinza, amarela ou verde) e as palavras.
+    Os três pontinhos <strong>⋯</strong> (ou o botão direito) abrem <strong>Renomear</strong>,
+    <strong>Duplicar</strong>, <strong>Mover para cima</strong>, <strong>Mover para baixo</strong>, <strong>Novo
+    capítulo depois deste</strong> e <strong>Excluir capítulo</strong>. Para reordenar, arraste o capítulo e solte na
+    nova posição; dois cliques também renomeiam.</p>
+  <figure class="tela" data-src="tela-capitulos.png">
+    <figcaption>A lista de capítulos com o menu de opções aberto</figcaption>
+  </figure>
+  <h2>Rascunho do capítulo</h2>
+  <p>Embaixo da lateral fica o <strong>rascunho do capítulo</strong>: a situação e as notas rápidas.</p>
+  <table class="compacta">
+    <thead><tr><th>Situação</th><th>Quando usar</th></tr></thead>
+    <tbody>
+      <tr><td>Rascunho</td><td>Ainda escrevendo</td></tr>
+      <tr><td>Revisão</td><td>Texto completo, falta revisar</td></tr>
+      <tr><td>Pronto</td><td>Pode publicar</td></tr>
+    </tbody>
+  </table>
+  <p>As notas servem para lembretes, pesquisa e ideias de cena. Elas são salvas com a história e <strong>nunca são
+    exportadas</strong>.</p>
+  <h2>Painel do capítulo (expandido)</h2>
+  <ol class="passos">
+    <li>Clique no botão <strong>⤢</strong> ao lado de “Rascunho do capítulo”. O painel abre à direita da folha, e você
+      continua escrevendo.</li>
+    <li>Preencha o <strong>resumo</strong> (o que acontece no capítulo), o <strong>ponto de vista</strong> e, se quiser,
+      uma <strong>meta de palavras</strong> do capítulo, que ganha uma barra de progresso.</li>
+    <li>Acompanhe as estatísticas: palavras, caracteres, parágrafos, frases, porcentagem de diálogo e tempo de
+      leitura, além das datas de criação e da última alteração.</li>
+    <li>Use <strong>← Anterior</strong> e <strong>Próximo →</strong> para passar pelos capítulos e <strong>⤡</strong>
+      ou <kbd>Esc</kbd> para recolher.</li>
+  </ol>
+  <figure class="tela" data-src="tela-painel-capitulo.png">
+    <figcaption>O painel do capítulo expandido, com a meta do capítulo</figcaption>
+  </figure>
+  <h2>Excluir um capítulo</h2>
+  <p>Use <strong>⋯ › Excluir capítulo</strong>. Antes de excluir, o Serifa guarda uma cópia da história; se precisar
+    do capítulo de volta, use <strong>Arquivo › Versões</strong> (capítulo 14).</p>
+</section>
+
+<!-- ================= 7. LAYOUT ================= -->
+<section class="capitulo">
+  <h1>Folhas e layout</h1>
+  <p>Tudo fica na guia <strong>Layout</strong>. As escolhas valem para o projeto inteiro e são usadas também ao
+    imprimir e ao exportar para Word, EPUB e PDF.</p>
+  <h2>Tamanho da página</h2>
+  <table class="compacta">
+    <thead><tr><th>Tamanho</th><th>Medidas</th><th>Bom para</th></tr></thead>
+    <tbody>
+      <tr><td>A4</td><td>21 × 29,7 cm</td><td>Imprimir em casa, enviar a concursos</td></tr>
+      <tr><td>A5</td><td>14,8 × 21 cm</td><td>Livretos e zines</td></tr>
+      <tr><td>Carta</td><td>21,6 × 27,9 cm</td><td>Padrão americano</td></tr>
+      <tr><td>Ofício</td><td>21,6 × 35,6 cm</td><td>Documentos longos</td></tr>
+      <tr><td>Livro 6 × 9"</td><td>15,2 × 22,9 cm</td><td>Livro impresso (autopublicação)</td></tr>
+      <tr><td>Bolso 5 × 8"</td><td>12,7 × 20,3 cm</td><td>Livro de bolso</td></tr>
+      <tr><td>B5</td><td>17,6 × 25 cm</td><td>Livros e cadernos</td></tr>
+    </tbody>
+  </table>
+  <h2>Orientação e margens</h2>
+  <p><strong>Orientação:</strong> Retrato (em pé) ou Paisagem (deitada). <strong>Margens:</strong> Normal
+    (3 × 2,5 cm), Estreita (1,27 cm), Moderada, Larga e Espelhada (a margem interna maior, para livros impressos frente
+    e verso).</p>
+  <h2>Tipos de folha</h2>
+  <table class="compacta">
+    <thead><tr><th>Folha</th><th>Aparência</th></tr></thead>
+    <tbody>
+      <tr><td>Branca</td><td>Folha comum</td></tr>
+      <tr><td>Marfim</td><td>Levemente creme, cansa menos a vista</td></tr>
+      <tr><td>Pautada</td><td>Com linhas, como um caderno</td></tr>
+      <tr><td>Quadriculada</td><td>Com quadradinhos</td></tr>
+      <tr><td>Antiga (sépia)</td><td>Tom de papel envelhecido</td></tr>
+      <tr><td>Noturna</td><td>Folha escura com letras claras, para escrever à noite</td></tr>
+    </tbody>
+  </table>
+  <figure class="tela" data-src="tela-layout.png tela-folhas.png">
+    <figcaption>A guia Layout com o tamanho da página e o tipo de folha</figcaption>
+  </figure>
+  <h2>Recuo da primeira linha e quebra de cena</h2>
+  <ul>
+    <li><strong>Recuo da primeira linha</strong> (grupo Folha): o começo de cada parágrafo fica para dentro, como nos
+      livros impressos.</li>
+    <li><strong>Cena</strong>: escolha o símbolo da quebra de cena (por exemplo <code>* * *</code>). Para inserir uma
+      quebra de cena, use <strong>Inserir › Quebra de cena</strong> ou <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd>.</li>
+    <li><strong>Quebra de página</strong>: <strong>Inserir › Quebra de página</strong> ou <kbd>Ctrl</kbd>+<kbd>Enter</kbd>.
+      Ela vale para impressão, Word e PDF; no Wattpad e no AO3 ela some.</li>
+  </ul>
+  <h2>Texto do livro</h2>
+  <p>No grupo <strong>Texto do livro</strong> você escolhe a fonte e o tamanho padrão de todo o projeto. A fonte da
+    guia Página Inicial muda só o trecho selecionado.</p>
+</section>
+
+<!-- ================= 8. TEMAS ================= -->
+<section class="capitulo">
+  <h1>Temas claro e escuro</h1>
+  <ol class="passos">
+    <li>Abra a guia <strong>Exibir</strong>, grupo <strong>Tema</strong>, e clique em <strong>Claro</strong> ou
+      <strong>Escuro</strong>. Também dá para usar o botão <strong>◐ Tema</strong> na barra de título ou
+      <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>.</li>
+    <li>Marque <strong>Folha escura no tema escuro</strong> se quiser que a folha também fique escura. Desmarcado, a
+      interface fica escura e a folha continua clara.</li>
+  </ol>
+  <figure class="tela" data-src="tela-tema-escuro.png tela-escuro.png">
+    <figcaption>O Serifa no tema escuro</figcaption>
+  </figure>
+  <h2>Tamanho da interface</h2>
+  <p>O Serifa abre com toda a tela em <strong>75%</strong>, como se o zoom do navegador estivesse em 75%: cabe mais
+    texto e a faixa de opções fica mais discreta. Para mudar, abra <strong>Exibir › Interface</strong> e escolha de
+    60% a 125% (<strong>Padrão</strong> volta para 75%). No celular, a interface abre em 100%. O zoom da folha, logo
+    abaixo, continua valendo por cima disso.</p>
+  <h2>Zoom e modos de exibição</h2>
+  <table class="compacta">
+    <thead><tr><th>Opção</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td>Zoom (− 100% +) e Largura da página</td><td>Aumenta ou diminui a folha na tela; "Largura da página" ajusta à janela</td></tr>
+      <tr><td>Modo foco (<kbd>F11</kbd>)</td><td>Esconde a faixa e os painéis: só você e o texto. <kbd>F11</kbd> de novo volta</td></tr>
+      <tr><td>Máquina de escrever</td><td>Mantém a linha que você está digitando no meio da tela</td></tr>
+      <tr><td>Tela cheia</td><td>Ocupa a tela toda</td></tr>
+      <tr><td>Capítulos</td><td>Mostra ou esconde o painel de capítulos</td></tr>
+    </tbody>
+  </table>
+  <figure class="tela" data-src="tela-foco.png tela-modo-foco.png">
+    <figcaption>O modo foco: só a folha na tela</figcaption>
+  </figure>
+</section>
+
+<!-- ================= 9. MODOS DE FORMATAÇÃO ================= -->
+<section class="capitulo">
+  <h1>Modos Livro, Wattpad e AO3</h1>
+  <p>Cada plataforma mostra o texto de um jeito. O Wattpad e o AO3 não têm recuo de parágrafo, então um diálogo
+    colado no meio da narração fica difícil de ler. O <strong>modo de formatação</strong> deixa a folha do Serifa
+    igual ao resultado final e prepara a exportação. Fica em <strong>Layout › Formatação</strong>.</p>
+  <table>
+    <thead><tr><th>Modo</th><th>Na folha</th><th>Linhas em branco automáticas</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Livro</strong></td><td>Recuo na primeira linha e texto justificado</td><td>Nenhuma</td></tr>
+      <tr><td><strong>Wattpad</strong></td><td>Sem recuo, parágrafos separados</td><td>Antes <strong>e depois</strong> de cada bloco de diálogo</td></tr>
+      <tr><td><strong>AO3</strong></td><td>Sem recuo</td><td><strong>Antes</strong> de cada bloco de diálogo</td></tr>
+    </tbody>
+  </table>
+  <p>As linhas em branco não são digitadas por você: o Serifa as coloca sozinho na exportação. Assim o texto continua
+    limpo e você pode trocar de modo quando quiser.</p>
+  <h2>Exemplo no modo Wattpad</h2>
+<pre>Ana parou na porta e olhou para trás.
+
+— Você vem?
+— Não sei.
+
+Ele continuou sentado, sem tirar os olhos da janela.</pre>
+  <p>Uma fala é todo parágrafo que começa com travessão (—), meia-risca (–), hífen e espaço, ou aspas (“, ", «).
+    Falas seguidas formam um bloco: a linha em branco entra antes e depois do bloco, não entre cada fala.</p>
+  <h2>Ajustar as linhas em branco</h2>
+  <ol class="passos">
+    <li>Escolha o modo em <strong>Layout › Formatação</strong> (Livro, Wattpad ou AO3).</li>
+    <li>Marque ou desmarque <strong>Linha em branco antes dos diálogos</strong> e <strong>Linha em branco depois dos
+      diálogos</strong>.</li>
+    <li>Se preferir uma linha entre todos os parágrafos, marque <strong>Linha entre todos os parágrafos</strong>
+      (grupo Texto do livro).</li>
+  </ol>
+  <h2>Separador de cena</h2>
+  <p>A quebra de cena (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd>) vira o símbolo escolhido centralizado no
+    Wattpad (por exemplo <code>* * *</code>) e uma linha horizontal no AO3.</p>
+  <figure class="tela" data-src="tela-modos.png tela-modo-wattpad.png tela-wattpad.png">
+    <figcaption>O mesmo capítulo no modo Wattpad</figcaption>
+  </figure>
+</section>
+
+<!-- ================= 10. CORRETOR ================= -->
+<section class="capitulo">
+  <h1>Corretor ortográfico</h1>
+  <p>O corretor usa o dicionário VERO de português do Brasil e funciona sem internet. Palavras desconhecidas ficam
+    com <strong>sublinhado vermelho ondulado</strong>.</p>
+  <ol class="passos">
+    <li>Clique com o <strong>botão direito</strong> na palavra sublinhada.</li>
+    <li>Escolha uma das <strong>sugestões</strong> para trocar a palavra.</li>
+    <li>Ou escolha <strong>Adicionar ao dicionário</strong> (nomes de personagens, lugares, palavras inventadas): ela
+      não será mais marcada em nenhum capítulo.</li>
+    <li>Ou escolha <strong>Ignorar “palavra”</strong> para deixar como está enquanto o projeto estiver aberto.</li>
+  </ol>
+  <figure class="tela" data-src="tela-corretor.png tela-ortografia.png">
+    <figcaption>Clique com o botão direito numa palavra sublinhada para ver as sugestões</figcaption>
+  </figure>
+  <h2>Ligar e desligar</h2>
+  <p>Pressione <kbd>F7</kbd>, clique em <strong>Corretor</strong> na barra de status ou em <strong>Revisão ›
+    Corretor</strong>.</p>
+  <h2>Dicionário pessoal</h2>
+  <p>Em <strong>Revisão › Dicionário pessoal</strong> você vê, adiciona e remove as palavras que ensinou ao Serifa.</p>
+  <figure class="tela" data-src="tela-dicionario.png tela-dicionario-pessoal.png">
+    <figcaption>O dicionário pessoal</figcaption>
+  </figure>
+  <div class="dica"><b>O que o corretor não marca:</b> números, palavras com uma letra só, siglas em maiúsculas de até
+    4 letras (como ONU) e endereços de sites e e-mails.</div>
+</section>
+
+<!-- ================= 11. IDEIAS ================= -->
+<section class="capitulo">
+  <h1>Balão de ideias</h1>
+  <p>O balão de ideias é um revisor gentil: uma <strong>lâmpada 💡 na margem direita</strong> mostra que há uma
+    sugestão naquela linha, e o trecho fica com um sublinhado discreto. Você decide se aceita ou não.</p>
+  <ol class="passos">
+    <li>Clique na lâmpada da margem (ou no trecho sublinhado).</li>
+    <li>Leia a explicação, por exemplo: "Mistura de tempos verbais: “caminhava” está no passado e “vê” no presente."</li>
+    <li>Clique em <strong>Trocar por “viu”</strong> para usar a sugestão, ou em <strong>Ignorar</strong> para que
+      aquele aviso não apareça mais neste projeto. O mesmo vale pelo botão direito: <strong>Trocar por…</strong> ou
+      <strong>Ignorar esta ideia</strong>.</li>
+  </ol>
+  <figure class="tela" data-src="tela-ideias.png tela-balao.png tela-balao-ideias.png">
+    <figcaption>Um balão de ideia aberto, com a sugestão</figcaption>
+  </figure>
+  <h2>Categorias</h2>
+  <table>
+    <thead><tr><th>Categoria</th><th>O que aponta</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td>Tempo verbal</td><td>Passado e presente misturados na mesma frase, ou um parágrafo no presente num capítulo narrado no passado</td><td>"Ela caminhava e <u>vê</u>" → "viu"</td></tr>
+      <tr><td>Concordância</td><td>Pronome com o verbo na pessoa errada; "haviam muitos", "fazem dois anos"</td><td>"eu <u>foi</u>" → "eu fui"</td></tr>
+      <tr><td>Pleonasmo</td><td>Repetição de ideia</td><td>"<u>subir para cima</u>" → "subir"</td></tr>
+      <tr><td>Crase</td><td>Crase que falta ou sobra</td><td>"<u>à partir</u>" → "a partir"</td></tr>
+      <tr><td>Sentido</td><td>Palavras parecidas com sentidos diferentes</td><td>"<u>mal exemplo</u>" → "mau exemplo"</td></tr>
+      <tr><td>Estilo</td><td>Frases muito longas, palavra repetida em seguida, construções a evitar</td><td>"<u>o o</u> livro" → "o livro"</td></tr>
+      <tr><td>Grafia</td><td>Erros comuns de escrita</td><td>"<u>derrepente</u>" → "de repente"</td></tr>
+    </tbody>
+  </table>
+  <p>Dentro das falas, o Serifa não reclama de tempo verbal nem de estilo: o personagem pode falar como quiser.
+    Lá só valem as regras de grafia, palavra repetida e concordância de pronome.</p>
+  <h2>Desligar quando quiser</h2>
+  <ul>
+    <li><kbd>Shift</kbd>+<kbd>F7</kbd> liga e desliga o balão de ideias a qualquer momento.</li>
+    <li>O botão <strong>Ideias</strong> na barra de status faz o mesmo.</li>
+    <li>Em <strong>Revisão › Balão de ideias</strong>, desmarque só as categorias que você não quer ver.</li>
+  </ul>
+  <div class="nota"><b>As ideias são sugestões.</b> A literatura quebra regras de propósito. Se uma ideia não serve
+    para o seu texto, clique em Ignorar ou desligue a categoria.</div>
+</section>
+
+<!-- ================= 12. ESTATÍSTICAS ================= -->
+<section class="capitulo">
+  <h1>Contador e estatísticas</h1>
+  <p>A barra de status conta enquanto você digita. Para ver tudo, clique em <strong>Revisão › Contagem</strong>.</p>
+  <table>
+    <thead><tr><th>Número</th><th>Como é contado</th></tr></thead>
+    <tbody>
+      <tr><td>Palavras</td><td>"guarda-chuva", "d’água" e "3,5" contam como uma palavra; "—Olá" conta como uma; reticências sozinhas não contam</td></tr>
+      <tr><td>Caracteres</td><td>Com e sem espaços</td></tr>
+      <tr><td>Frases</td><td>Terminadas por ponto, exclamação, interrogação ou reticências</td></tr>
+      <tr><td>Parágrafos</td><td>Parágrafos com texto (linhas vazias não contam)</td></tr>
+      <tr><td>Falas</td><td>Parágrafos que começam com travessão ou aspas</td></tr>
+      <tr><td>Tempo de leitura</td><td>Palavras ÷ 200, arredondado para cima, em minutos</td></tr>
+      <tr><td>Sessão</td><td>Palavras escritas desde que você abriu o Serifa</td></tr>
+      <tr><td>Hoje / meta</td><td>Palavras escritas hoje, em todos os projetos, e a sua meta diária</td></tr>
+    </tbody>
+  </table>
+  <h2>Definir a meta diária</h2>
+  <ol class="passos">
+    <li>Clique em <strong>Revisão › Meta diária</strong>.</li>
+    <li>Digite quantas palavras quer escrever por dia (de 50 a 100.000; por exemplo, 1000) e clique em
+      <strong>Definir</strong>.</li>
+    <li>Acompanhe "Hoje: 655 / 1000" na barra de status. O contador recomeça a cada dia.</li>
+  </ol>
+  <h2>Repetições</h2>
+  <p><strong>Revisão › Repetições</strong> mostra as palavras mais usadas no capítulo, para achar aquele "então" que
+    aparece demais.</p>
+  <figure class="tela" data-src="tela-estatisticas.png tela-contagem.png">
+    <figcaption>A janela de estatísticas do texto</figcaption>
+  </figure>
+</section>
+
+<!-- ================= 13. EXPORTAR ================= -->
+<section class="capitulo">
+  <h1>Exportar</h1>
+  <p>Tudo fica na guia <strong>Exportar</strong>. Primeiro escolha a <strong>Abrangência</strong>: <strong>Capítulo
+    atual</strong> ou <strong>História inteira</strong>. O Wattpad e o AO3 publicam um capítulo por vez.</p>
+
+  <h2>Para o Wattpad</h2>
+  <ol class="passos">
+    <li>Abra o capítulo no Serifa. Se quiser ver como vai ficar, ligue <strong>Layout › Formatação › Wattpad</strong>.</li>
+    <li>Clique em <strong>Exportar › Copiar para o Wattpad</strong>. O capítulo vai formatado para a área de
+      transferência, com as linhas em branco dos diálogos e a quebra de cena.</li>
+    <li>No Wattpad, entre em <strong>Escrever</strong>, abra a sua história e crie uma parte nova (ou abra a parte
+      que vai atualizar).</li>
+    <li>Digite o título do capítulo no campo de título da parte.</li>
+    <li>Clique no corpo do texto e pressione <kbd>Ctrl</kbd>+<kbd>V</kbd>. Negrito, itálico, sublinhado e
+      alinhamentos são mantidos.</li>
+    <li>Confira, clique em <strong>Salvar</strong> e depois em <strong>Publicar</strong>.</li>
+  </ol>
+  <div class="dica"><b>Atalho:</b> <strong>Copiar e abrir</strong> copia e já abre o Wattpad numa aba nova.
+    <strong>Arquivo</strong> baixa o HTML do Wattpad, para guardar.</div>
+  <figure class="tela" data-src="tela-exportar-wattpad.png tela-exportar.png">
+    <figcaption>Copiar para o Wattpad</figcaption>
+  </figure>
+
+  <h2>Para o AO3 (Archive of Our Own)</h2>
+  <ol class="passos">
+    <li>Abra o capítulo no Serifa e clique em <strong>Exportar › Copiar HTML do AO3</strong>.</li>
+    <li>No AO3, entre na sua conta e clique em <strong>Post › New Work</strong> (ou, numa obra existente,
+      <strong>Add Chapter</strong>).</li>
+    <li>Preencha as informações da obra (fandom, classificação, avisos, título).</li>
+    <li>No campo <strong>Work Text</strong>, clique na aba <strong>HTML</strong> (não em "Rich Text").</li>
+    <li>Apague o que estiver no campo e cole com <kbd>Ctrl</kbd>+<kbd>V</kbd>.</li>
+    <li>Clique em <strong>Preview</strong> para conferir e depois em <strong>Post</strong>.</li>
+  </ol>
+  <p>O HTML do AO3 usa <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;u&gt;</code>, tachado,
+    subscrito, sobrescrito e links; títulos viram <code>&lt;h3&gt;</code>, citações viram
+    <code>&lt;blockquote&gt;</code> e a quebra de cena vira uma linha horizontal.</p>
+  <figure class="tela" data-src="tela-exportar-ao3.png tela-ao3.png">
+    <figcaption>Copiar o HTML para a aba HTML do AO3</figcaption>
+  </figure>
+
+  <h2>Todos os capítulos em .zip</h2>
+  <ol class="passos">
+    <li>Na guia <strong>Exportar</strong>, clique em <strong>Capítulos em .zip</strong> (grupo História inteira).</li>
+    <li>Escolha o formato de cada capítulo: Word, texto, Markdown, HTML, HTML do Wattpad ou HTML do AO3. Se quiser,
+      inclua também o <code>.serifa</code> da história.</li>
+    <li>Clique em <strong>Gerar .zip</strong>. Dentro do arquivo há uma pasta com o nome da história e um arquivo por
+      capítulo, numerado na ordem: <code>01 - O porto.docx</code>, <code>02 - A tempestade.docx</code>…</li>
+  </ol>
+  <figure class="tela" data-src="tela-zip.png">
+    <figcaption>Exportar a história em .zip</figcaption>
+  </figure>
+  <h2>Documentos</h2>
+  <table>
+    <thead><tr><th>Botão</th><th>Gera</th><th>Para que serve</th></tr></thead>
+    <tbody>
+      <tr><td>Word</td><td><code>.docx</code></td><td>Abrir no Word, LibreOffice ou Google Docs; enviar a editoras e revisores</td></tr>
+      <tr><td>EPUB</td><td><code>.epub</code></td><td>Ler no Kindle, Kobo, celular; publicar e-book</td></tr>
+      <tr><td>PDF</td><td>Impressão</td><td>Abre a janela de impressão: escolha <strong>Salvar como PDF</strong> ou a impressora</td></tr>
+      <tr><td>HTML</td><td><code>.html</code></td><td>Página da web com o texto</td></tr>
+      <tr><td>Markdown</td><td><code>.md</code></td><td>Sites e blogs que usam Markdown</td></tr>
+      <tr><td>Texto</td><td><code>.txt</code></td><td>Texto puro, sem formatação</td></tr>
+      <tr><td><code>.serifa</code></td><td><code>.serifa</code></td><td>Projeto completo (capítulos, notas, configurações): backup e levar para outro computador</td></tr>
+    </tbody>
+  </table>
+  <h3>Gerar um PDF</h3>
+  <ol class="passos">
+    <li>Clique em <strong>Exportar › PDF</strong> (ou <strong>Imprimir ou salvar em PDF</strong>).</li>
+    <li>Na janela de impressão, em <strong>Destino</strong>, escolha <strong>Salvar como PDF</strong>.</li>
+    <li>Clique em <strong>Salvar</strong> e escolha a pasta. O tamanho da página e as margens são os do Layout.</li>
+  </ol>
+</section>
+
+<!-- ================= 14. ONDE FICA SALVO ================= -->
+<section class="capitulo">
+  <h1>Onde os textos ficam salvos</h1>
+  <p>O Serifa salva sozinho no <strong>navegador</strong> (no IndexedDB, um banco de dados que o próprio navegador
+    guarda no seu computador). Na barra de título aparece "Salvo às 14:32" ou "Alterações não salvas".</p>
+  <table>
+    <thead><tr><th>Ação</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Escrever</td><td>Salvamento automático no navegador, enquanto você digita</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd> (Salvar)</td><td>Salva agora e guarda uma versão. No Chrome e no Edge, na primeira vez pergunta onde gravar o arquivo <code>.serifa</code>; as próximas gravam no mesmo arquivo</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> (Salvar como)</td><td>Sempre pergunta o nome e a pasta do <code>.serifa</code></td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>O</kbd> (Minhas histórias)</td><td>Mostra as histórias guardadas no navegador</td></tr>
+      <tr><td>Abrir arquivo</td><td>Abre um <code>.serifa</code>, <code>.docx</code>, <code>.txt</code>, <code>.md</code> ou <code>.html</code></td></tr>
+    </tbody>
+  </table>
+  <div class="aviso"><b>Cuidado ao limpar o navegador.</b> "Limpar dados de navegação" com "Cookies e dados de sites"
+    marcado apaga os projetos guardados no navegador. Antes, salve cada projeto como <code>.serifa</code>. No Firefox e
+    no Safari, o arquivo vai para a pasta Downloads.</div>
+
+  <h2>No Serifa para Windows</h2>
+  <p>No <code>Serifa.exe</code>, além do salvamento automático na janela, cada história tem uma pasta própria:</p>
+  <table>
+    <thead><tr><th>Ação</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Criar uma história</td><td>Cria a pasta <code>Downloads\Nome da história</code></td></tr>
+      <tr><td>Escrever</td><td>O <code>.serifa</code> da história é gravado na pasta a cada poucos segundos</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd> e exportações</td><td>Vão direto para a pasta da história, sem perguntar onde salvar; o aviso mostra o caminho e o botão <strong>Abrir pasta</strong></td></tr>
+      <tr><td>Salvar como</td><td>Pergunta só o nome; o arquivo vai para a mesma pasta</td></tr>
+      <tr><td>Fechar a janela</td><td>Não pergunta nada: o que estava na tela é salvo na pasta e na janela</td></tr>
+    </tbody>
+  </table>
+  <h2>Aba Configurações</h2>
+  <ol class="passos">
+    <li>Abra a guia <strong>Configurações</strong>.</li>
+    <li>Em <strong>Onde salvar</strong>, veja a pasta atual. <strong>Escolher pasta…</strong> abre a janela do Windows
+      para escolher outra; <strong>Abrir</strong> mostra a pasta no Explorador; <strong>Padrão</strong> volta para
+      Downloads.</li>
+    <li>Em <strong>Salvamento</strong>, ligue ou desligue <strong>Criar uma pasta para cada história nova</strong> e
+      <strong>Salvar o .serifa na pasta enquanto escrevo</strong>.</li>
+  </ol>
+  <figure class="tela" data-src="tela-configuracoes.png">
+    <figcaption>A guia Configurações no Serifa para Windows</figcaption>
+  </figure>
+  <p class="pequeno">As configurações ficam em <code>%AppData%\Serifa\config.json</code>; a janela do Serifa guarda os
+    textos em <code>%AppData%\Serifa\janela</code>.</p>
+
+  <h2>Versões anteriores</h2>
+  <p>Cada salvamento guarda uma versão do projeto (as 50 mais recentes).</p>
+  <ol class="passos">
+    <li>Clique em <strong>Arquivo › Versões</strong>.</li>
+    <li>Escolha a versão pela data e pelo número de palavras.</li>
+    <li>Clique em <strong>Restaurar</strong>. A versão atual continua na lista, então dá para voltar.</li>
+  </ol>
+
+  <figure class="tela" data-src="tela-versoes.png tela-revisoes.png">
+    <figcaption>A lista de versões anteriores do projeto</figcaption>
+  </figure>
+  <h2>Levar para outro computador</h2>
+  <ol class="passos">
+    <li>No computador de origem: <strong>Arquivo › Salvar como</strong> e grave o <code>.serifa</code> num pen drive ou
+      na sua nuvem.</li>
+    <li>No outro computador: abra o Serifa e use <strong>Arquivo › Abrir arquivo</strong>.</li>
+  </ol>
+</section>
+
+<!-- ================= 15. ATALHOS ================= -->
+<section class="capitulo">
+  <h1>Atalhos do teclado</h1>
+  <p>A lista também aparece em <strong>Arquivo › Atalhos</strong>. No Mac, use <kbd>⌘</kbd> no lugar de <kbd>Ctrl</kbd>.</p>
+  <figure class="tela" data-src="tela-atalhos.png">
+    <figcaption>A janela de atalhos do teclado</figcaption>
+  </figure>
+  <table>
+    <thead><tr><th>Atalho</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Salvar (e gravar o <code>.serifa</code> no Chrome e no Edge)</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></td><td>Salvar como</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>O</kbd></td><td>Minhas histórias</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>N</kbd></td><td>Novo capítulo</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>B</kbd> / <kbd>I</kbd> / <kbd>U</kbd></td><td>Negrito / itálico / sublinhado</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>E</kbd> / <kbd>L</kbd> / <kbd>R</kbd> / <kbd>J</kbd></td><td>Centralizar / à esquerda / à direita / justificar</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td><td>Quebra de página</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd></td><td>Quebra de cena</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>F</kbd></td><td>Localizar</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>H</kbd></td><td>Substituir</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Desfazer / refazer</td></tr>
+      <tr><td><kbd>F7</kbd></td><td>Liga e desliga o corretor ortográfico</td></tr>
+      <tr><td><kbd>Shift</kbd>+<kbd>F7</kbd></td><td>Liga e desliga o balão de ideias</td></tr>
+      <tr><td><kbd>F11</kbd></td><td>Modo foco</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd></td><td>Título 1 / 2 / 3</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>0</kbd></td><td>Estilo Normal</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>4</kbd> a <kbd>8</kbd></td><td>Pensamento / Flashback / Mensagem / Carta / Nota do autor</td></tr>
+      <tr><td><kbd>Esc</kbd></td><td>Fecha Minhas histórias, o painel do capítulo, o seletor de fontes ou o tutorial</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd></td><td>Tema claro ou escuro</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>X</kbd> / <kbd>C</kbd> / <kbd>V</kbd></td><td>Recortar / copiar / colar</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ================= 16. PRIVACIDADE ================= -->
+<section class="capitulo">
+  <h1>Privacidade</h1>
+  <ul>
+    <li><strong>Nada sai do seu computador.</strong> O texto, o corretor e o balão de ideias funcionam dentro do
+      navegador. Nenhum dado é enviado para a internet: não há conta, login, propaganda ou rastreamento.</li>
+    <li>O site do GitHub Pages só entrega os arquivos do programa. Depois de aberto, o Serifa não conversa com
+      nenhum servidor.</li>
+    <li>O <strong>autor</strong> do projeto é um pseudônimo <strong>opcional</strong>: use o nome que quiser, ou
+      deixe em branco.</li>
+    <li>Ao copiar para o Wattpad ou o AO3, o texto vai para a área de transferência; só você decide colar e publicar.</li>
+    <li>No servidor Java, os dados ficam no seu computador (arquivos ou PostgreSQL) e o servidor só aceita conexões
+      do próprio computador.</li>
+  </ul>
+</section>
+
+<!-- ================= 17. PROBLEMAS ================= -->
+<section class="capitulo">
+  <h1>Solução de problemas</h1>
+  <table>
+    <thead><tr><th>Problema</th><th>O que fazer</th></tr></thead>
+    <tbody>
+      <tr><td>Minhas histórias sumiram</td><td>Confira se é o mesmo navegador e a mesma maneira de abrir (site ou <code>visualizar.bat</code> guardam em lugares diferentes). Janelas anônimas não guardam nada depois de fechadas. Abra o último <code>.serifa</code> com <strong>Arquivo › Abrir arquivo</strong></td></tr>
+      <tr><td>Aparece "Alterações não salvas"</td><td>Pressione <kbd>Ctrl</kbd>+<kbd>S</kbd>. Se aparecer "Não foi possível salvar", o disco pode estar cheio ou o navegador bloqueou o armazenamento: salve como <code>.serifa</code></td></tr>
+      <tr><td>O <kbd>Ctrl</kbd>+<kbd>S</kbd> não pergunta onde salvar</td><td>Só o Chrome e o Edge permitem escolher a pasta. No Firefox e no Safari, use <strong>Salvar como</strong>: o arquivo vai para Downloads</td></tr>
+      <tr><td>O travessão não aparece</td><td>Confira <strong>Revisão › AutoCorreção › Travessão automático</strong>. O <code>- </code> só vira travessão no começo do parágrafo</td></tr>
+      <tr><td>Nenhuma palavra fica sublinhada</td><td>O corretor pode estar desligado: pressione <kbd>F7</kbd>. Na primeira abertura, o dicionário leva alguns segundos para carregar</td></tr>
+      <tr><td>Um nome próprio fica sempre vermelho</td><td>Clique com o botão direito e escolha <strong>Adicionar ao dicionário</strong></td></tr>
+      <tr><td>Lâmpadas demais na margem</td><td><kbd>Shift</kbd>+<kbd>F7</kbd> desliga tudo; ou desmarque categorias em <strong>Revisão › Balão de ideias</strong></td></tr>
+      <tr><td>No Wattpad, o texto colou sem linhas entre os diálogos</td><td>Use <strong>Copiar para o Wattpad</strong> (não o <kbd>Ctrl</kbd>+<kbd>C</kbd> comum) e cole no corpo da parte com <kbd>Ctrl</kbd>+<kbd>V</kbd></td></tr>
+      <tr><td>No AO3, apareceram as tags <code>&lt;p&gt;</code> no texto</td><td>Você colou na aba Rich Text. Apague, clique na aba <strong>HTML</strong> e cole de novo</td></tr>
+      <tr><td>O <code>visualizar.bat</code> abriu o site da internet</td><td>Ele faz isso quando não acha a pasta <code>web</code> ao lado dele, ou quando não consegue abrir o servidor local. Extraia o ZIP inteiro e rode o <code>visualizar.bat</code> de dentro da pasta extraída</td></tr>
+      <tr><td>O <code>visualizar.bat</code> abre e fecha</td><td>Clique com o botão direito no arquivo, <strong>Propriedades</strong>, e marque <strong>Desbloquear</strong>. Confira se a pasta foi extraída do ZIP (não rode de dentro do ZIP)</td></tr>
+      <tr><td>A página do servidor Java não abre</td><td>Confira se o servidor está rodando e se a porta é a 8080 (ou a de <code>SERIFA_PORT</code>). Use <code>http://127.0.0.1:8080</code></td></tr>
+      <tr><td>A folha ficou escura e eu não queria</td><td>Em <strong>Layout › Folha</strong>, troque "Noturna" por outra; ou, no tema escuro, desmarque <strong>Folha escura no tema escuro</strong></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ================= GALERIA (montada com as capturas não citadas) ================= -->
+<section class="capitulo sem-numero" data-rotulo="Anexo" id="galeria">
+  <h1>Galeria de telas</h1>
+  <p>Outras telas do Serifa.</p>
+</section>
+
+</div>
+<script src="paginar.js"></script>
+</body>
+</html>

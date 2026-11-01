@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="Serifa: editor para escritores de livros e fanfics, com contador de palavras, corretor ortográfico, balão de ideias e exportação para Wattpad e AO3.">
+<title>Serifa</title>
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fontes.css">
+<link rel="stylesheet" href="css/serifa.css">
+<script type="module" src="js/ui/app.js"></script>
+</head>
+<body>
+<header class="titlebar">
+  <img class="logo" src="img/logo.svg" alt="">
+  <span class="app-name">Serifa</span>
+  <button type="button" class="lib-btn" id="btnLibrary" data-cmd="open-projects" title="Minhas histórias (Ctrl+O)">📚 Minhas histórias</button>
+  <span class="crumb" aria-hidden="true">›</span>
+  <input class="doc-title" id="docTitle" type="text" aria-label="Nome da história" spellcheck="false" maxlength="120">
+  <span class="save-state" id="saveState">Salvo</span>
+  <span class="spacer"></span>
+  <span class="badge" id="storageBadge">Neste navegador</span>
+  <button type="button" data-cmd="theme-toggle" title="Tema claro ou escuro (Ctrl+Shift+D)">☾ Tema</button>
+  <button type="button" data-cmd="tutorial" title="Tutorial e ajuda">? Ajuda</button>
+</header>
+
+<nav class="ribbon-tabs" role="tablist" aria-label="Faixa de opções">
+  <button type="button" role="tab" data-tab="arquivo">Arquivo</button>
+  <button type="button" role="tab" data-tab="inicio" aria-selected="true">Página Inicial</button>
+  <button type="button" role="tab" data-tab="inserir">Inserir</button>
+  <button type="button" role="tab" data-tab="layout">Layout</button>
+  <button type="button" role="tab" data-tab="revisao">Revisão</button>
+  <button type="button" role="tab" data-tab="exibir">Exibir</button>
+  <button type="button" role="tab" data-tab="exportar">Exportar</button>
+  <button type="button" role="tab" data-tab="config">Configurações</button>
+</nav>
+
+<section class="ribbon" id="ribbon">
+  <div class="panel" data-panel="arquivo" hidden>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="new-project" title="Criar uma história nova"><span class="ic">✚</span>Nova história</button>
+      <button class="rb big" data-cmd="open-projects" title="Minhas histórias (Ctrl+O)"><span class="ic">📚</span>Minhas histórias</button>
+      <button class="rb big" data-cmd="open-file" title="Abrir arquivo .serifa, .docx, .txt, .md ou .html"><span class="ic">📂</span>Abrir arquivo</button>
+      <button class="rb big" data-cmd="import-folder" title="Importar uma pasta de PDFs ou TXTs como uma história, um capítulo por arquivo"><span class="ic">🗂</span>Importar pasta</button>
+    </div><div class="label">História</div></div>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="save" title="Salvar (Ctrl+S)"><span class="ic">💾</span>Salvar</button>
+      <button class="rb big" data-cmd="save-as" title="Salvar como… (Ctrl+Shift+S)"><span class="ic">🗂</span>Salvar como</button>
+      <button class="rb big" data-cmd="revisions" title="Versões anteriores da história"><span class="ic">🕓</span>Versões</button>
+    </div><div class="label">Salvar</div></div>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="project-props" title="Nome, descrição, pseudônimo e meta"><span class="ic">✎</span>Detalhes</button>
+      <button class="rb big" data-cmd="tutorial" title="Rever o tutorial"><span class="ic">✦</span>Tutorial</button>
+      <button class="rb big" data-cmd="help-shortcuts" title="Atalhos do teclado"><span class="ic">⌨</span>Atalhos</button>
+    </div><div class="label">Ajuda</div></div>
+  </div>
+
+  <div class="panel" data-panel="inicio">
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="paste" title="Colar (Ctrl+V)"><span class="ic">📋</span>Colar</button>
+      <div class="rows">
+        <button class="rb" data-cmd="cut" title="Recortar (Ctrl+X)">✂ Recortar</button>
+        <button class="rb" data-cmd="copy" title="Copiar (Ctrl+C)">⧉ Copiar</button>
+      </div>
+    </div><div class="label">Área de transferência</div></div>
+    <div class="group"><div class="rows">
+      <div class="row">
+        <button type="button" class="font-btn" id="fontPickerBtn" title="Fonte: sem nada selecionado, muda a história toda"><span id="fontPickerName">Georgia</span><span class="caret">▾</span></button>
+        <select class="size" id="fontSize" title="Tamanho da fonte">
+          <option>8</option><option>9</option><option>10</option><option>10.5</option><option>11</option><option selected>12</option>
+          <option>14</option><option>16</option><option>18</option><option>20</option><option>24</option><option>28</option>
+          <option>36</option><option>48</option><option>72</option>
+        </select>
+        <button class="rb" data-cmd="clear-format" title="Limpar formatação">⌫ᴬ</button>
+      </div>
+      <div class="row">
+        <button class="rb" data-cmd="bold" title="Negrito (Ctrl+B)"><b>N</b></button>
+        <button class="rb" data-cmd="italic" title="Itálico (Ctrl+I)"><i>I</i></button>
+        <button class="rb" data-cmd="underline" title="Sublinhado (Ctrl+U)"><u>S</u></button>
+        <button class="rb" data-cmd="strike" title="Tachado"><s>abc</s></button>
+        <button class="rb" data-cmd="subscript" title="Subscrito">x₂</button>
+        <button class="rb" data-cmd="superscript" title="Sobrescrito">x²</button>
+        <input type="color" id="foreColor" value="#5d1c16" title="Cor do texto">
+        <input type="color" id="hiliteColor" value="#f6e4a6" title="Realce">
+      </div>
+    </div><div class="label">Fonte</div></div>
+    <div class="group"><div class="rows">
+      <div class="row">
+        <button class="rb" data-cmd="ul" title="Marcadores">• ≡</button>
+        <button class="rb" data-cmd="ol" title="Numeração">1. ≡</button>
+        <button class="rb" data-cmd="outdent" title="Diminuir recuo">⇤</button>
+        <button class="rb" data-cmd="indent" title="Aumentar recuo">⇥</button>
+        <select id="lineHeight" title="Espaçamento entre linhas">
+          <option value="1">1,0</option><option value="1.15">1,15</option><option value="1.5" selected>1,5</option>
+          <option value="2">2,0</option><option value="2.5">2,5</option>
+        </select>
+      </div>
+      <div class="row">
+        <button class="rb" data-cmd="align-left" title="Alinhar à esquerda (Ctrl+L)">⯇≡</button>
+        <button class="rb" data-cmd="align-center" title="Centralizar (Ctrl+E)">≡</button>
+        <button class="rb" data-cmd="align-right" title="Alinhar à direita (Ctrl+R)">≡⯈</button>
+        <button class="rb" data-cmd="align-justify" title="Justificar (Ctrl+J)">☰</button>
+      </div>
+    </div><div class="label">Parágrafo</div></div>
+    <div class="group"><div class="styles" id="styleGallery">
+      <button class="rb style-btn" data-cmd="style-p" title="Normal (Ctrl+0)">Normal</button>
+      <button class="rb style-btn h1" data-cmd="style-h1" title="Título 1 (Ctrl+Alt+1)">Título 1</button>
+      <button class="rb style-btn h2" data-cmd="style-h2" title="Título 2 (Ctrl+Alt+2)">Título 2</button>
+      <button class="rb style-btn h3" data-cmd="style-h3" title="Título 3 (Ctrl+Alt+3)">Título 3</button>
+      <button class="rb style-btn q" data-cmd="style-quote" title="Citação">Citação</button>
+      <button class="rb style-btn s-pensamento" data-style="pensamento" title="Pensamento: o que o personagem pensa, em itálico (Ctrl+Alt+4)">Pensamento</button>
+      <button class="rb style-btn s-flashback" data-style="flashback" title="Flashback: lembranças e cenas do passado (Ctrl+Alt+5)">Flashback</button>
+      <button class="rb style-btn s-mensagem" data-style="mensagem" title="Mensagem: balão de celular ou chat (Ctrl+Alt+6)">Mensagem</button>
+      <button class="rb style-btn s-carta" data-style="carta" title="Carta: bilhetes, cartas e diários (Ctrl+Alt+7)">Carta</button>
+      <button class="rb style-btn s-nota" data-style="nota" title="Nota do autor: recado para quem lê (Ctrl+Alt+8)">Nota do autor</button>
+    </div><div class="label">Estilos</div></div>
+    <div class="group"><div class="rows">
+      <button class="rb" data-cmd="find" title="Localizar (Ctrl+F)">🔍 Localizar</button>
+      <button class="rb" data-cmd="replace" title="Substituir (Ctrl+H)">⇄ Substituir</button>
+      <div class="row">
+        <button class="rb" data-cmd="undo" title="Desfazer (Ctrl+Z)">↶</button>
+        <button class="rb" data-cmd="redo" title="Refazer (Ctrl+Y)">↷</button>
+      </div>
+    </div><div class="label">Editar</div></div>
+  </div>
+
+  <div class="panel" data-panel="inserir" hidden>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="new-chapter" title="Novo capítulo (Ctrl+N)"><span class="ic">✚</span>Capítulo</button>
+      <button class="rb big" data-cmd="scene-break" title="Quebra de cena (Ctrl+Shift+Enter)"><span class="ic">✻</span>Quebra de cena</button>
+      <button class="rb big" data-cmd="page-break" title="Quebra de página (Ctrl+Enter)"><span class="ic">⤓</span>Quebra de página</button>
+    </div><div class="label">Quebras</div></div>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="image" title="Imagem do computador"><span class="ic">🖼</span>Imagem</button>
+      <button class="rb big" data-cmd="table" title="Tabela"><span class="ic">▦</span>Tabela</button>
+      <button class="rb big" data-cmd="link" title="Link"><span class="ic">🔗</span>Link</button>
+      <button class="rb big" data-cmd="date" title="Data e hora"><span class="ic">📅</span>Data</button>
+    </div><div class="label">Elementos</div></div>
+    <div class="group"><div class="rows">
+      <div class="row">
+        <button class="rb" data-insert="— " title="Travessão de diálogo">— travessão</button>
+        <button class="rb" data-insert="…" title="Reticências">…</button>
+        <button class="rb" data-insert="“”" title="Aspas curvas">“ ”</button>
+        <button class="rb" data-insert="«»" title="Aspas angulares">« »</button>
+      </div>
+      <div class="row">
+        <select id="specialChar" title="Caracteres especiais">
+          <option value="">Símbolos…</option><option>§</option><option>¶</option><option>•</option><option>°</option>
+          <option>©</option><option>™</option><option>†</option><option>‡</option><option>♥</option><option>★</option>
+          <option>☆</option><option>♪</option><option>→</option><option>←</option><option>½</option><option>ª</option><option>º</option>
+        </select>
+      </div>
+    </div><div class="label">Símbolos</div></div>
+  </div>
+
+  <div class="panel" data-panel="layout" hidden>
+    <div class="group"><div class="rows">
+      <label class="chk">Tamanho <select id="pageSize">
+        <option value="a4">A4 (21 × 29,7 cm)</option><option value="a5">A5 (14,8 × 21 cm)</option>
+        <option value="carta">Carta (21,6 × 27,9 cm)</option><option value="oficio">Ofício (21,6 × 35,6 cm)</option>
+        <option value="livro-6x9">Livro 6 × 9"</option><option value="bolso-5x8">Bolso 5 × 8"</option><option value="b5">B5 (17,6 × 25 cm)</option>
+      </select></label>
+      <label class="chk">Orientação <select id="orientation"><option value="retrato">Retrato</option><option value="paisagem">Paisagem</option></select></label>
+      <label class="chk">Margens <select id="margins">
+        <option value="normal">Normal (3 × 2,5 cm)</option><option value="estreita">Estreita (1,27 cm)</option>
+        <option value="moderada">Moderada</option><option value="larga">Larga</option><option value="espelhada">Espelhada</option>
+      </select></label>
+    </div><div class="label">Configurar página</div></div>
+    <div class="group"><div class="rows">
+      <label class="chk">Folha <select id="paper">
+        <option value="branca">Branca</option><option value="marfim">Marfim</option><option value="pautada">Pautada</option>
+        <option value="quadriculada">Quadriculada</option><option value="antiga">Antiga (sépia)</option><option value="noturna">Noturna</option>
+      </select></label>
+      <label class="chk"><input type="checkbox" id="firstLineIndent" checked> Recuo da primeira linha</label>
+      <label class="chk">Cena <input type="text" id="sceneBreak" value="* * *" size="7" title="Símbolo da quebra de cena"></label>
+    </div><div class="label">Folha</div></div>
+    <div class="group"><div class="rows">
+      <div class="row">
+        <button class="rb toggle-btn" data-mode="livro" title="Livro: recuo e texto justificado">📖 Livro</button>
+        <button class="rb toggle-btn" data-mode="wattpad" title="Wattpad: sem recuo, linhas antes e depois dos diálogos">W Wattpad</button>
+        <button class="rb toggle-btn" data-mode="ao3" title="AO3: sem recuo, linha antes dos diálogos">A AO3</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="blankBeforeDialogue"> Linha em branco antes dos diálogos</label>
+      <label class="chk"><input type="checkbox" id="blankAfterDialogue"> Linha em branco depois dos diálogos</label>
+    </div><div class="label">Formatação</div></div>
+    <div class="group"><div class="rows">
+      <label class="chk"><input type="checkbox" id="blankBetweenParagraphs"> Linha entre todos os parágrafos</label>
+      <label class="chk">Fonte da história <button type="button" class="font-btn" id="bookFontBtn"><span id="bookFontName">Georgia</span><span class="caret">▾</span></button></label>
+      <label class="chk">Tamanho <input type="number" id="defaultSize" min="8" max="24" step="0.5" value="12"> pt</label>
+    </div><div class="label">Texto do livro</div></div>
+  </div>
+
+  <div class="panel" data-panel="revisao" hidden>
+    <div class="group"><div class="rows">
+      <button class="rb toggle-btn" data-cmd="toggle-spell" id="btnSpell" title="Liga e desliga o corretor (F7)">✓ Corretor</button>
+      <button class="rb" data-cmd="personal-dict" title="Palavras que você adicionou">📕 Dicionário pessoal</button>
+      <span class="muted" style="font-size:11px">Português do Brasil (VERO)</span>
+    </div><div class="label">Ortografia</div></div>
+    <div class="group"><div class="rows">
+      <button class="rb toggle-btn" data-cmd="toggle-ideas" id="btnIdeas" title="Liga e desliga o balão de ideias (Shift+F7)">💡 Balão de ideias</button>
+      <div class="row" id="ideaCats">
+        <label class="chk"><input type="checkbox" value="tempo-verbal" checked> Tempo verbal</label>
+        <label class="chk"><input type="checkbox" value="concordancia" checked> Concordância</label>
+        <label class="chk"><input type="checkbox" value="pleonasmo" checked> Pleonasmo</label>
+      </div>
+      <div class="row">
+        <label class="chk"><input type="checkbox" value="crase" checked> Crase</label>
+        <label class="chk"><input type="checkbox" value="sentido" checked> Sentido</label>
+        <label class="chk"><input type="checkbox" value="estilo" checked> Estilo</label>
+        <label class="chk"><input type="checkbox" value="ortografia" checked> Grafia</label>
+      </div>
+    </div><div class="label">Balão de ideias</div></div>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="word-count" title="Estatísticas do texto"><span class="ic">123</span>Contagem</button>
+      <button class="rb big" data-cmd="repeated" title="Palavras mais usadas"><span class="ic">⟲</span>Repetições</button>
+      <button class="rb big" data-cmd="goal" title="Meta de palavras por dia"><span class="ic">🎯</span>Meta diária</button>
+    </div><div class="label">Ferramentas</div></div>
+    <div class="group"><div class="rows">
+      <label class="chk"><input type="checkbox" id="autoDash" checked> Travessão automático (-- e - )</label>
+      <label class="chk"><input type="checkbox" id="smartQuotes" checked> Aspas curvas automáticas</label>
+      <label class="chk"><input type="checkbox" id="autoEllipsis" checked> Reticências (... → …)</label>
+    </div><div class="label">AutoCorreção</div></div>
+  </div>
+
+  <div class="panel" data-panel="exibir" hidden>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="theme-light"><span class="ic">☀</span>Claro</button>
+      <button class="rb big" data-cmd="theme-dark"><span class="ic">☾</span>Escuro</button>
+      <label class="chk"><input type="checkbox" id="darkPaper" checked> Folha escura<br>no tema escuro</label>
+    </div><div class="label">Tema</div></div>
+    <div class="group"><div class="row">
+      <button class="rb" data-cmd="zoom-out" title="Diminuir zoom">−</button>
+      <span id="zoomLabel" style="min-width:44px;text-align:center">100%</span>
+      <button class="rb" data-cmd="zoom-in" title="Aumentar zoom">+</button>
+      <button class="rb" data-cmd="zoom-reset">100%</button>
+      <button class="rb" data-cmd="zoom-fit">Largura da página</button>
+    </div><div class="label">Zoom da folha</div></div>
+    <div class="group"><div class="rows">
+      <label class="chk">Tamanho <select id="uiScale" title="Tamanho de toda a interface, como o zoom do navegador">
+        <option value="0">Padrão (75%)</option><option value="60">60%</option><option value="67">67%</option><option value="80">80%</option>
+        <option value="90">90%</option><option value="100">100%</option><option value="110">110%</option><option value="125">125%</option>
+      </select></label>
+      <span class="muted" style="font-size:11px;max-width:170px;white-space:normal">Deixa tudo maior ou menor, como o zoom do navegador.</span>
+    </div><div class="label">Interface</div></div>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="focus" title="Modo foco (F11)"><span class="ic">◎</span>Modo foco</button>
+      <button class="rb big toggle-btn" data-cmd="typewriter" id="btnTypewriter" title="Mantém a linha atual no meio da tela"><span class="ic">⌨</span>Máquina de escrever</button>
+      <button class="rb big" data-cmd="fullscreen"><span class="ic">⛶</span>Tela cheia</button>
+      <button class="rb big toggle-btn" data-cmd="toggle-chapters" id="btnChapters"><span class="ic">☰</span>Capítulos</button>
+    </div><div class="label">Modos</div></div>
+  </div>
+
+  <div class="panel" data-panel="exportar" hidden>
+    <div class="group"><div class="rows">
+      <label class="chk">Exportar <select id="exportScope"><option value="chapter">Capítulo atual</option><option value="all">História inteira</option></select></label>
+      <span class="muted" style="font-size:11px;max-width:180px;white-space:normal">Wattpad e AO3 publicam um capítulo por vez.</span>
+    </div><div class="label">Abrangência</div></div>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="wattpad-copy" title="Copia o capítulo formatado para colar no editor do Wattpad"><span class="ic">W</span>Copiar para o Wattpad</button>
+      <button class="rb big" data-cmd="wattpad-open" title="Copia e abre o Wattpad numa aba nova"><span class="ic">↗</span>Copiar e abrir</button>
+      <button class="rb big" data-cmd="wattpad-file" title="Baixa o HTML do Wattpad"><span class="ic">⤓</span>Arquivo</button>
+    </div><div class="label">Wattpad</div></div>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="ao3-copy" title="Copia o HTML para a aba HTML do AO3"><span class="ic">A</span>Copiar HTML do AO3</button>
+      <button class="rb big" data-cmd="ao3-open" title="Copia e abre o AO3 numa aba nova"><span class="ic">↗</span>Copiar e abrir</button>
+      <button class="rb big" data-cmd="ao3-file"><span class="ic">⤓</span>Arquivo</button>
+    </div><div class="label">AO3</div></div>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="export-docx"><span class="ic">W</span>Word</button>
+      <button class="rb big" data-cmd="export-epub"><span class="ic">📘</span>EPUB</button>
+      <button class="rb big" data-cmd="export-pdf" title="Imprimir ou salvar em PDF"><span class="ic">🖨</span>PDF</button>
+      <button class="rb big" data-cmd="export-html"><span class="ic">&lt;/&gt;</span>HTML</button>
+      <button class="rb big" data-cmd="export-md"><span class="ic">M↓</span>Markdown</button>
+      <button class="rb big" data-cmd="export-txt"><span class="ic">Tt</span>Texto</button>
+      <button class="rb big" data-cmd="export-serifa"><span class="ic">✒</span>.serifa</button>
+    </div><div class="label">Documentos</div></div>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="export-zip" title="Todos os capítulos, um arquivo por capítulo, numa pasta com o nome da história"><span class="ic">🗜</span>Capítulos em .zip</button>
+    </div><div class="label">História inteira</div></div>
+  </div>
+
+  <div class="panel" data-panel="config" hidden>
+    <div class="group" data-desktop hidden><div class="rows">
+      <label class="chk cfg-path">Pasta das histórias <input type="text" id="cfgBase" readonly></label>
+      <div class="row">
+        <button class="rb" data-cmd="cfg-choose" title="Escolher outra pasta">📁 Escolher pasta…</button>
+        <button class="rb" data-cmd="cfg-open" title="Abrir no Explorador de Arquivos">↗ Abrir</button>
+        <button class="rb" data-cmd="cfg-open-story" title="Abrir a pasta da história atual">📖 Pasta desta história</button>
+        <button class="rb" data-cmd="cfg-default" title="Voltar para a pasta Downloads">↺ Padrão</button>
+      </div>
+      <span class="muted" id="cfgDefaultNote" style="font-size:11px"></span>
+    </div><div class="label">Onde salvar</div></div>
+    <div class="group" data-desktop hidden><div class="rows">
+      <label class="chk"><input type="checkbox" id="cfgCreate" checked> Criar uma pasta para cada história nova</label>
+      <label class="chk"><input type="checkbox" id="cfgAuto" checked> Salvar o .serifa na pasta enquanto escrevo</label>
+      <span class="muted" style="font-size:11px;max-width:300px;white-space:normal">Exportações (Word, EPUB, HTML, .zip…) vão direto para a pasta da história.</span>
+    </div><div class="label">Salvamento</div></div>
+    <div class="group" data-web><div class="rows">
+      <span class="cfg-web"><b>Pasta das histórias</b><br>No Serifa para Windows (<code>Serifa.exe</code>), cada história ganha uma pasta em Downloads<br>e os arquivos são salvos lá sozinhos. No navegador, eles vão para os downloads do navegador.</span>
+    </div><div class="label">Onde salvar</div></div>
+    <div class="group"><div class="row">
+      <button class="rb big" data-cmd="tutorial"><span class="ic">✦</span>Tutorial</button>
+      <button class="rb big" data-cmd="help-shortcuts"><span class="ic">⌨</span>Atalhos</button>
+      <button class="rb big" data-cmd="project-props"><span class="ic">✎</span>Detalhes</button>
+    </div><div class="label">Ajuda</div></div>
+  </div>
+</section>
+
+<main class="workspace" id="workspace">
+  <aside class="chapters" aria-label="História e capítulos">
+    <div class="story-head">
+      <div class="story-kicker">História</div>
+      <h2 class="story-name" id="storyName"></h2>
+      <p class="story-desc" id="storyDesc"></p>
+      <button type="button" class="icon-btn story-edit" data-cmd="story-edit" title="Editar nome e descrição">✎</button>
+    </div>
+    <div class="ch-head"><span>Capítulos</span><span class="ch-count" id="chapterCount"></span></div>
+    <ol id="chapterList"></ol>
+    <button type="button" class="add-chapter" id="btnAddChapter" data-cmd="new-chapter" title="Novo capítulo (Ctrl+N)">＋ Novo capítulo</button>
+    <div class="totals" id="projectTotals"></div>
+    <section class="draft" aria-label="Rascunho do capítulo">
+      <div class="draft-head"><span>Rascunho do capítulo</span><button type="button" class="icon-btn" data-cmd="draft-expand" id="btnDraftExpand" title="Expandir o painel do capítulo">⤢</button></div>
+      <div class="status-pills" id="statusPills" role="radiogroup" aria-label="Situação do capítulo">
+        <button type="button" role="radio" data-status="rascunho">Rascunho</button>
+        <button type="button" role="radio" data-status="revisao">Revisão</button>
+        <button type="button" role="radio" data-status="pronto">Pronto</button>
+      </div>
+      <textarea id="chapterNotes" placeholder="Notas rápidas: ideias, personagens, pendências… (não vão para a exportação)"></textarea>
+    </section>
+  </aside>
+  <div class="desk" id="desk">
+    <div class="sheet-wrap" id="sheetWrap">
+      <article class="sheet" id="sheet">
+        <h1 class="chapter-title" id="chapterTitle" contenteditable="true" spellcheck="false"></h1>
+        <div class="editor modo-livro recuo" id="editor" contenteditable="true" spellcheck="false" aria-label="Texto do capítulo"></div>
+      </article>
+      <div class="ideas-layer" id="ideasLayer"></div>
+    </div>
+  </div>
+  <aside class="draft-panel" id="draftPanel" aria-label="Painel do capítulo" hidden></aside>
+</main>
+<section class="library" id="library" aria-label="Minhas histórias" hidden></section>
+
+<footer class="statusbar">
+  <span class="stat" id="stPage">Página 1 de 1</span>
+  <span class="stat" id="stWords" title="Palavras do capítulo e do livro"><b>0</b> palavras</span>
+  <span class="stat" id="stSel" hidden></span>
+  <span class="stat" id="stChars">0 caracteres</span>
+  <span class="stat" id="stRead">0 min de leitura</span>
+  <span class="stat" id="stSession" title="Palavras escritas desde que abriu o Serifa">Sessão: 0</span>
+  <span class="goal" title="Meta diária"><span id="stGoal">Hoje: 0 / 1000</span><progress id="goalBar" max="1000" value="0"></progress></span>
+  <span class="spacer"></span>
+  <button class="sw" data-cmd="toggle-spell" id="swSpell" title="Corretor ortográfico (F7)">Corretor</button>
+  <button class="sw" data-cmd="toggle-ideas" id="swIdeas" title="Balão de ideias (Shift+F7)">Ideias</button>
+  <span class="stat" id="stIssues"></span>
+  <span class="stat" id="stMode">Livro</span>
+  <input type="range" id="zoomRange" min="50" max="200" step="10" value="100" aria-label="Zoom">
+</footer>
+
+<div class="context-menu" id="menu" role="menu" hidden></div>
+<div class="balloon" id="balloon" hidden></div>
+<div class="findbar" id="findbar" hidden>
+  <div class="row"><input id="findText" type="text" placeholder="Localizar"><button class="btn" data-cmd="find-prev" title="Anterior">↑</button><button class="btn" data-cmd="find-next" title="Próximo">↓</button><button class="btn" data-cmd="find-close" title="Fechar">✕</button></div>
+  <div class="row" id="replaceRow"><input id="replaceText" type="text" placeholder="Substituir por"><button class="btn" data-cmd="replace-one">Substituir</button><button class="btn" data-cmd="replace-all">Todos</button></div>
+  <label class="info"><input type="checkbox" id="findCase"> Diferenciar maiúsculas</label>
+  <div class="info" id="findInfo"></div>
+</div>
+<dialog id="dialog"></dialog>
+<input type="file" id="fileInput" hidden>
+<input type="file" id="folderInput" webkitdirectory multiple hidden>
+<input type="file" id="imageInput" accept="image/png,image/jpeg,image/gif,image/webp" hidden>
+<div class="toast" id="toast" hidden></div>
+</body>
+</html>

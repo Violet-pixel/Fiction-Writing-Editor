@@ -1,0 +1,238 @@
+[
+  {
+    "text": "Voce nao sabe de nada.",
+    "personal": [],
+    "expected": [
+      {
+        "word": "Voce",
+        "start": 0,
+        "end": 4
+      },
+      {
+        "word": "nao",
+        "start": 5,
+        "end": 8
+      }
+    ],
+    "firstSuggestions": {
+      "Voce": "Você",
+      "nao": "não"
+    }
+  },
+  {
+    "text": "Ela caminhou pela casa.",
+    "personal": [],
+    "expected": [],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "O menino estava felis.",
+    "personal": [],
+    "expected": [
+      {
+        "word": "felis",
+        "start": 16,
+        "end": 21
+      }
+    ],
+    "firstSuggestions": {
+      "felis": "feliz"
+    }
+  },
+  {
+    "text": "Exceção à regra: excessão.",
+    "personal": [],
+    "expected": [
+      {
+        "word": "excessão",
+        "start": 17,
+        "end": 25
+      }
+    ],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "Ele foi ao mercado comprar pão.",
+    "personal": [],
+    "expected": [],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "Ninguem viu o cachorro.",
+    "personal": [],
+    "expected": [
+      {
+        "word": "Ninguem",
+        "start": 0,
+        "end": 7
+      }
+    ],
+    "firstSuggestions": {
+      "Ninguem": "Ninguém"
+    }
+  },
+  {
+    "text": "A ONU e o CNPJ não contam.",
+    "personal": [],
+    "expected": [],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "Acesse www.exemplo.com.br ou http://site.com/pagina agora.",
+    "personal": [],
+    "expected": [],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "Meu email é alguem@exemplo.com.",
+    "personal": [],
+    "expected": [
+      {
+        "word": "email",
+        "start": 4,
+        "end": 9
+      }
+    ],
+    "firstSuggestions": {
+      "email": "e-mail"
+    }
+  },
+  {
+    "text": "O guarda-chuva estava molhado.",
+    "personal": [],
+    "expected": [],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "Ela disse: “Vamos embora daqui”.",
+    "personal": [],
+    "expected": [],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "Tinha 3kg de farinha e 2x mais.",
+    "personal": [],
+    "expected": [],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "ELA GRITOU MUITO ALTO.",
+    "personal": [],
+    "expected": [],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "Maria e João foram à praia.",
+    "personal": [],
+    "expected": [],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "Ele derrepente parou.",
+    "personal": [],
+    "expected": [
+      {
+        "word": "derrepente",
+        "start": 4,
+        "end": 14
+      }
+    ],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "Os passaros cantavam na arvore.",
+    "personal": [],
+    "expected": [
+      {
+        "word": "passaros",
+        "start": 3,
+        "end": 11
+      }
+    ],
+    "firstSuggestions": {
+      "passaros": "pássaros"
+    }
+  },
+  {
+    "text": "Isso e muito facil.",
+    "personal": [],
+    "expected": [
+      {
+        "word": "facil",
+        "start": 13,
+        "end": 18
+      }
+    ],
+    "firstSuggestions": {
+      "facil": "fácil"
+    }
+  },
+  {
+    "text": "A cidade de São Paulo é grande.",
+    "personal": [],
+    "expected": [],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "Ela pensou: será que ele vem?",
+    "personal": [],
+    "expected": [],
+    "firstSuggestions": {}
+  },
+  {
+    "text": "Quero um cafe com açucar.",
+    "personal": [],
+    "expected": [
+      {
+        "word": "açucar",
+        "start": 18,
+        "end": 24
+      }
+    ],
+    "firstSuggestions": {
+      "açucar": "açúcar"
+    }
+  },
+  {
+    "text": "Ele correu rapidamete.",
+    "personal": [],
+    "expected": [
+      {
+        "word": "rapidamete",
+        "start": 11,
+        "end": 21
+      }
+    ],
+    "firstSuggestions": {
+      "rapidamete": "rapidamente"
+    }
+  },
+  {
+    "text": "Ela é inteligênte.",
+    "personal": [],
+    "expected": [
+      {
+        "word": "inteligênte",
+        "start": 6,
+        "end": 17
+      }
+    ],
+    "firstSuggestions": {
+      "inteligênte": "inteligente"
+    }
+  },
+  {
+    "text": "Zorbinho chegou com Xablau.",
+    "personal": [
+      "zorbinho"
+    ],
+    "expected": [
+      {
+        "word": "Xablau",
+        "start": 20,
+        "end": 26
+      }
+    ],
+    "firstSuggestions": {}
+  }
+]

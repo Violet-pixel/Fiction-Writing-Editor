@@ -1,0 +1,90 @@
+[
+  {
+    "html": "<p>Era uma vez.</p><p>— Olá — disse ela.</p><p>Fim.</p>",
+    "format": "wattpad",
+    "options": {},
+    "expected": "<p>Era uma vez.</p>\n<p>&nbsp;</p>\n<p>— Olá — disse ela.</p>\n<p>&nbsp;</p>\n<p>Fim.</p>"
+  },
+  {
+    "html": "<p>Era uma vez.</p><p>— Olá — disse ela.</p><p>Fim.</p>",
+    "format": "ao3",
+    "options": {},
+    "expected": "<p>Era uma vez.</p>\n<p>&nbsp;</p>\n<p>— Olá — disse ela.</p>\n<p>Fim.</p>"
+  },
+  {
+    "html": "<p>Era uma vez.</p><p>— Olá — disse ela.</p><p>Fim.</p>",
+    "format": "txt",
+    "options": {},
+    "expected": "Era uma vez.\n\n— Olá — disse ela.\n\nFim."
+  },
+  {
+    "html": "<h2>Parte  1</h2><p style=\"text-align:center\"><strong>Negrito</strong> e <em>itálico</em></p><hr class=\"cena\"><p>Depois &amp; antes &lt;3</p>",
+    "format": "wattpad",
+    "options": {},
+    "expected": "<p style=\"text-align:center\"><b>Parte 1</b></p>\n<p style=\"text-align:center\"><b>Negrito</b> e <i>itálico</i></p>\n<p style=\"text-align:center\">* * *</p>\n<p>Depois &amp; antes &lt;3</p>"
+  },
+  {
+    "html": "<h2>Parte  1</h2><p style=\"text-align:center\"><strong>Negrito</strong> e <em>itálico</em></p><hr class=\"cena\"><p>Depois &amp; antes &lt;3</p>",
+    "format": "ao3",
+    "options": {},
+    "expected": "<h3>Parte 1</h3>\n<p align=\"center\"><strong>Negrito</strong> e <em>itálico</em></p>\n<hr />\n<p>Depois &amp; antes &lt;3</p>"
+  },
+  {
+    "html": "<p>  Muitos   espaços\n aqui&nbsp;e ali  </p><p></p><p>   </p><p>Linha<br>quebrada</p>",
+    "format": "wattpad",
+    "options": {
+      "blankBetweenParagraphs": true
+    },
+    "expected": "<p>Muitos espaços aqui e ali</p>\n<p>&nbsp;</p>\n<p>Linha<br>quebrada</p>"
+  },
+  {
+    "html": "<p><s>riscado</s> <sub>2</sub> <sup>3</sup> <a href=\"https://exemplo.com\">link</a> <a href=\"javascript:alert(1)\">mau</a> <u>sub</u></p>",
+    "format": "ao3",
+    "options": {},
+    "expected": "<p><s>riscado</s> <sub>2</sub> <sup>3</sup> <a href=\"https://exemplo.com\">link</a> mau <u>sub</u></p>"
+  },
+  {
+    "html": "<p><s>riscado</s> <sub>2</sub> <sup>3</sup> <a href=\"https://exemplo.com\">link</a> <span style=\"color:red\">cor</span> <u>sub</u></p>",
+    "format": "wattpad",
+    "options": {},
+    "expected": "<p>riscado 2 3 link cor <u>sub</u></p>"
+  },
+  {
+    "html": "<blockquote><p>Citação <em>bonita</em></p></blockquote><ul><li>Um</li><li>Dois</li></ul><div class=\"quebra-pagina\"></div><p style=\"text-align:right\">Assinado</p>",
+    "format": "wattpad",
+    "options": {},
+    "expected": "<p><i>Citação <i>bonita</i></i></p>\n<p>Um</p>\n<p>Dois</p>\n<p style=\"text-align:right\">Assinado</p>"
+  },
+  {
+    "html": "<blockquote><p>Citação <em>bonita</em></p></blockquote><ul><li>Um</li><li>Dois</li></ul><div class=\"quebra-pagina\"></div><p style=\"text-align:right\">Assinado</p>",
+    "format": "ao3",
+    "options": {},
+    "expected": "<blockquote><p>Citação <em>bonita</em></p></blockquote>\n<p>Um</p>\n<p>Dois</p>\n<p align=\"right\">Assinado</p>"
+  },
+  {
+    "html": "<p>“Vamos?”</p><p>“Sim.”</p><p>Saíram.</p><hr class=\"cena\"><p>— Depois.</p>",
+    "format": "ao3",
+    "options": {
+      "blankAfterDialogue": true,
+      "sceneBreak": "~"
+    },
+    "expected": "<p>“Vamos?”</p>\n<p>“Sim.”</p>\n<p>&nbsp;</p>\n<p>Saíram.</p>\n<hr />\n<p>&nbsp;</p>\n<p>— Depois.</p>"
+  },
+  {
+    "html": "<p>Antes</p><hr class=\"cena\"><p>Depois com <b>negrito</b></p>",
+    "format": "txt",
+    "options": {
+      "sceneBreak": "#"
+    },
+    "expected": "Antes\n\n#\n\nDepois com negrito"
+  },
+  {
+    "html": "<p style=\"text-align:justify\">Justificado</p><p style=\"text-align:center\">— Fala centralizada</p><p>Narração.</p>",
+    "format": "wattpad",
+    "options": {
+      "blankAfterDialogue": false,
+      "blankBeforeDialogue": false
+    },
+    "expected": "<p>Justificado</p>\n<p style=\"text-align:center\">— Fala centralizada</p>\n<p>Narração.</p>"
+  }
+]

@@ -1,0 +1,14 @@
+# gerados
+server/target/
+native/build/
+dados-servidor/
+node_modules/
+*.class
+# editores e sistema
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+# variáveis locais
+.env
+.env.*

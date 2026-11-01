@@ -1,0 +1,227 @@
+/* Serifa — estilo comum dos PDFs (Manual e Banco de dados).
+   Copyright (©) 2026 Clara Portes
+   A paginação é feita por paginar.js: cada .pagina tem exatamente o tamanho de uma folha A4. */
+
+:root {
+  --wine: #9c4a5b;
+  --slate: #8395a7;
+  --coffee: #4a5a6b;
+  --linen: #e9e4d2;
+  --olive: #556b47;
+  --rose: #d8a7b1;
+  --straw: #f6e8eb;
+  --texto: #1e252c;
+  --texto-2: #3b4651;
+  --texto-3: #5f6a75;
+  --borda: #cdc4ad;
+  --superficie: #f3f0e4;
+  --superficie-2: #fffefa;
+}
+
+@page { size: A4; margin: 0; }
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: var(--texto);
+  font-family: "Public Sans", "Inter", "Segoe UI", "DejaVu Sans", Arial, sans-serif;
+  font-size: 9.3pt;
+  line-height: 1.55;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* A fonte original fica escondida; só as páginas montadas aparecem. */
+#fonte { position: absolute; left: -10000px; top: 0; width: 174mm; }
+
+/* ---------- Página ---------- */
+.pagina {
+  width: 210mm;
+  height: 297mm;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  break-after: page;
+  page-break-after: always;
+}
+.pagina:last-child { break-after: auto; page-break-after: auto; }
+
+.cab {
+  position: absolute;
+  top: 11mm; left: 18mm; right: 18mm;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 7.2pt; color: var(--texto-3);
+}
+.cab .marca { display: flex; align-items: center; gap: 5px; color: var(--texto); font-weight: 700; font-size: 7.6pt; }
+.cab .marca svg, .cab .marca img { width: 14px; height: 14px; display: block; }
+
+.corpo {
+  position: absolute;
+  top: 22mm; bottom: 19mm; left: 18mm; right: 18mm;
+  overflow: hidden;
+}
+.corpo > :first-child { margin-top: 0; }
+
+.rod {
+  position: absolute;
+  bottom: 9mm; left: 18mm; right: 18mm;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 7pt; color: var(--texto-3);
+}
+
+/* ---------- Capa ---------- */
+.pagina.capa .cab, .pagina.capa .rod { display: none; }
+.capa-conteudo { position: absolute; inset: 0; }
+.capa-logo {
+  position: absolute; top: 26mm; left: 18mm;
+  width: 19mm; height: 19mm;
+  border: 1px solid var(--borda);
+  display: flex; align-items: center; justify-content: center;
+  background: #fff;
+}
+.capa-logo svg, .capa-logo img { width: 18mm; height: 18mm; display: block; image-rendering: pixelated; }
+.capa-texto { position: absolute; left: 18mm; right: 40mm; top: 150mm; }
+.capa-texto h1 { font-size: 34pt; line-height: 1.05; margin: 0 0 7mm; letter-spacing: -0.5px; }
+.capa-texto .subtitulo { font-size: 12pt; font-weight: 600; margin: 0 0 6mm; }
+.capa-texto .resumo { font-size: 9.5pt; color: var(--texto-2); max-width: 128mm; margin: 0 0 12mm; }
+.capa-texto .creditos { font-size: 8.6pt; line-height: 1.7; margin: 0; }
+.capa-texto .creditos a { color: var(--wine); }
+.capa-versao {
+  position: absolute; left: 18mm; right: 40mm; bottom: 19mm;
+  border-top: 1px solid var(--borda); padding-top: 3mm;
+  font-size: 7.4pt; color: var(--texto-3);
+}
+.capa-faixa { position: absolute; left: 0; right: 0; bottom: 0; height: 7mm; display: flex; }
+.capa-faixa span { flex: 1; }
+
+/* ---------- Títulos ---------- */
+.rotulo { color: var(--wine); font-weight: 700; font-size: 7.8pt; margin: 0 0 1.2mm; }
+h1 { font-size: 19pt; line-height: 1.2; margin: 0 0 7mm; letter-spacing: -0.2px; }
+h2 { font-size: 12pt; line-height: 1.3; margin: 7mm 0 3mm; }
+h3 { font-size: 10pt; line-height: 1.35; margin: 5mm 0 2mm; }
+h4 { font-size: 9.3pt; margin: 4mm 0 1.5mm; color: var(--coffee); }
+p { margin: 0 0 2.6mm; }
+a { color: var(--wine); text-decoration: underline; text-decoration-thickness: 0.5px; }
+strong { font-weight: 700; }
+
+/* ---------- Código e teclas ---------- */
+code {
+  font-family: "DejaVu Sans Mono", Consolas, "Courier New", monospace;
+  font-size: 7.6pt;
+  background: var(--superficie);
+  border-radius: 2px;
+  padding: 0.5px 3px;
+  color: #1e252c;
+}
+pre {
+  font-family: "DejaVu Sans Mono", Consolas, "Courier New", monospace;
+  font-size: 7.4pt;
+  line-height: 1.5;
+  background: var(--superficie-2);
+  border: 1px solid var(--linen);
+  border-left: 3px solid var(--coffee);
+  padding: 2.6mm 3.4mm;
+  margin: 0 0 3.4mm;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+pre .ln { display: block; min-height: 1.5em; }
+pre .cm { color: var(--olive); }
+kbd {
+  font-family: "DejaVu Sans Mono", Consolas, monospace;
+  font-size: 7.2pt;
+  border: 1px solid var(--borda);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  padding: 0 3.5px;
+  background: var(--superficie-2);
+  white-space: nowrap;
+}
+
+/* ---------- Tabelas ---------- */
+table { width: 100%; border-collapse: collapse; margin: 0 0 4mm; font-size: 8.2pt; }
+th {
+  background: var(--linen);
+  text-align: left;
+  font-weight: 700;
+  padding: 2.3mm 2.6mm;
+  vertical-align: bottom;
+}
+td { padding: 2mm 2.6mm; border-bottom: 1px solid var(--linen); vertical-align: top; }
+tr { break-inside: avoid; }
+table.campos td:first-child, table.campos td:nth-child(2) { white-space: nowrap; }
+table.campos td:nth-child(3) { white-space: nowrap; color: var(--texto-2); }
+table.compacta td, table.compacta th { padding: 1.5mm 2.4mm; }
+.etq {
+  display: inline-block; font-size: 6.6pt; font-weight: 700; letter-spacing: 0.3px;
+  padding: 0 4px; border-radius: 2px; background: var(--straw); color: var(--wine);
+}
+.etq.fk { background: var(--rose); color: var(--wine); }
+.etq.uk { background: var(--linen); color: var(--coffee); }
+
+/* ---------- Caixas ---------- */
+.nota, .aviso, .dica {
+  background: #f7f0dc;
+  border-left: 3px solid var(--wine);
+  padding: 2.8mm 3.6mm;
+  margin: 0 0 4mm;
+  break-inside: avoid;
+}
+.nota p:last-child, .aviso p:last-child, .dica p:last-child { margin-bottom: 0; }
+.aviso { background: #f6e8eb; }
+.dica { background: var(--superficie-2); border-left-color: var(--olive); }
+.nota > b:first-child, .aviso > b:first-child, .dica > b:first-child { color: var(--wine); }
+
+/* ---------- Listas e passos ---------- */
+ul, ol { margin: 0 0 3mm; padding-left: 5mm; }
+li { margin: 0 0 1.2mm; }
+ol.passos { list-style: none; padding-left: 0; counter-reset: passo; }
+ol.passos > li {
+  counter-increment: passo;
+  position: relative;
+  padding-left: 8.5mm;
+  margin-bottom: 2.4mm;
+  min-height: 5.5mm;
+}
+ol.passos > li::before {
+  content: counter(passo);
+  position: absolute; left: 0; top: 0;
+  width: 5.4mm; height: 5.4mm; border-radius: 50%;
+  background: var(--wine); color: #fff;
+  font-weight: 700; font-size: 7.6pt;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ---------- Figuras ---------- */
+figure { margin: 0 0 4.5mm; break-inside: avoid; }
+figure img {
+  display: block; max-width: 100%; max-height: 112mm; margin: 0 auto;
+  border: 1px solid var(--borda);
+}
+figure.diagrama { border: 1px solid var(--linen); background: var(--superficie-2); padding: 3mm; }
+figure.diagrama svg { display: block; width: 100%; height: auto; }
+figcaption { font-size: 7.6pt; color: var(--texto-3); text-align: center; margin-top: 2mm; }
+figcaption .fig-num { color: var(--wine); font-weight: 700; }
+
+/* ---------- Sumário ---------- */
+.toc {
+  display: flex; justify-content: space-between; align-items: baseline;
+  text-decoration: none; color: var(--texto);
+  padding: 1.5mm 0; border-bottom: 1px solid var(--linen);
+  font-size: 8.4pt;
+}
+.toc.n1 { font-weight: 700; margin-top: 2.4mm; border-bottom-color: var(--borda); }
+.toc.n2 { padding-left: 4mm; color: var(--texto-2); }
+.toc .p { color: var(--texto-3); font-weight: 400; }
+.toc.n1 .p { color: var(--texto); font-weight: 700; }
+
+/* ---------- Paleta ---------- */
+.paleta { display: flex; gap: 2mm; margin: 0 0 4mm; }
+.paleta div { flex: 1; font-size: 6.8pt; color: var(--texto-2); }
+.paleta div span { display: block; height: 10mm; border: 1px solid var(--linen); margin-bottom: 1mm; }
+
+.dois { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.pequeno { font-size: 7.8pt; color: var(--texto-2); }

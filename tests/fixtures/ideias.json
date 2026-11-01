@@ -1,0 +1,264 @@
+[
+  {
+    "text": "Ele subiu para cima da escada.",
+    "expected": [
+      {
+        "rule": "pleonasmo-subir-para-cima",
+        "start": 4,
+        "end": 19
+      }
+    ]
+  },
+  {
+    "text": "Haviam muitas pessoas na sala.",
+    "expected": [
+      {
+        "rule": "concordancia-haviam-existir",
+        "start": 0,
+        "end": 13
+      }
+    ]
+  },
+  {
+    "text": "Fazem dez anos que não o vejo.",
+    "expected": [
+      {
+        "rule": "concordancia-fazem-tempo",
+        "start": 0,
+        "end": 14
+      }
+    ]
+  },
+  {
+    "text": "Ela caminhava pela rua e vê um gato.",
+    "expected": [
+      {
+        "rule": "tempo-verbal-frase",
+        "start": 25,
+        "end": 27
+      }
+    ]
+  },
+  {
+    "text": "Eu foi ao mercado.",
+    "expected": [
+      {
+        "rule": "concordancia-pronome",
+        "start": 3,
+        "end": 6
+      }
+    ]
+  },
+  {
+    "text": "Nós vai sair cedo.",
+    "expected": [
+      {
+        "rule": "concordancia-pronome",
+        "start": 4,
+        "end": 7
+      }
+    ]
+  },
+  {
+    "text": "Eles foi embora.",
+    "expected": [
+      {
+        "rule": "concordancia-pronome",
+        "start": 5,
+        "end": 8
+      }
+    ]
+  },
+  {
+    "text": "O o menino correu.",
+    "expected": [
+      {
+        "rule": "palavra-repetida",
+        "start": 0,
+        "end": 3
+      }
+    ]
+  },
+  {
+    "text": "Ela disse que que não sabia.",
+    "expected": [
+      {
+        "rule": "palavra-repetida",
+        "start": 10,
+        "end": 17
+      }
+    ]
+  },
+  {
+    "text": "À partir de amanhã, tudo muda.",
+    "expected": [
+      {
+        "rule": "crase-a-partir",
+        "start": 0,
+        "end": 8
+      }
+    ]
+  },
+  {
+    "text": "Disse à ela a verdade.",
+    "expected": [
+      {
+        "rule": "crase-antes-de-pronome-pessoal",
+        "start": 6,
+        "end": 7
+      }
+    ]
+  },
+  {
+    "text": "Foi à cavalo até a vila.",
+    "expected": [
+      {
+        "rule": "crase-a-cavalo",
+        "start": 4,
+        "end": 12
+      }
+    ]
+  },
+  {
+    "text": "A medida que andava, pensava.",
+    "expected": [
+      {
+        "rule": "crase-a-medida-que",
+        "start": 0,
+        "end": 12
+      }
+    ]
+  },
+  {
+    "text": "Concerteza ele vem.",
+    "expected": [
+      {
+        "rule": "ortografia-concerteza",
+        "start": 0,
+        "end": 10
+      }
+    ]
+  },
+  {
+    "text": "Derrepente, a porta abriu.",
+    "expected": [
+      {
+        "rule": "ortografia-derrepente",
+        "start": 0,
+        "end": 10
+      }
+    ]
+  },
+  {
+    "text": "Agente vai sair mais tarde.",
+    "expected": [
+      {
+        "rule": "ortografia-agente-a-gente",
+        "start": 0,
+        "end": 6
+      }
+    ]
+  },
+  {
+    "text": "Ele estava mau humorado.",
+    "expected": [
+      {
+        "rule": "ortografia-mau-humorado",
+        "start": 11,
+        "end": 23
+      }
+    ]
+  },
+  {
+    "text": "Foi um mal exemplo.",
+    "expected": [
+      {
+        "rule": "ortografia-mal-substantivo",
+        "start": 7,
+        "end": 10
+      }
+    ]
+  },
+  {
+    "text": "Você saiu porque?",
+    "expected": [
+      {
+        "rule": "ortografia-porque-pergunta",
+        "start": 10,
+        "end": 16
+      }
+    ]
+  },
+  {
+    "text": "— Eu vejo tudo — disse ela, e caminhava.",
+    "expected": []
+  },
+  {
+    "text": "Ela andava pela casa. Ela olhava as janelas. Ela pensava no irmão. Ela chorava baixinho. Ela esperava a noite. Ela lembrava do pai. Ele gritava longe. Ela sentia frio.\nEla anda pela sala e olha a janela vazia.",
+    "expected": [
+      {
+        "rule": "tempo-verbal-capitulo",
+        "start": 172,
+        "end": 176
+      }
+    ]
+  },
+  {
+    "text": "Ele entrou na sala, olhou ao redor, viu as cadeiras viradas, as janelas abertas, as cortinas rasgadas, os livros espalhados pelo chão, a lareira apagada, o retrato torto na parede, a mesa coberta de poeira e restos de comida, as garrafas vazias no canto, e pensou que talvez fosse tarde demais para salvar qualquer coisa daquela casa antiga.",
+    "expected": [
+      {
+        "rule": "frase-longa",
+        "start": 0,
+        "end": 341
+      }
+    ]
+  },
+  {
+    "text": "Se eu ver ele, aviso.",
+    "expected": [
+      {
+        "rule": "tempo-verbal-se-eu-ver",
+        "start": 0,
+        "end": 9
+      }
+    ]
+  },
+  {
+    "text": "Isso foi há muitos anos atrás.",
+    "expected": [
+      {
+        "rule": "pleonasmo-ha-anos-atras",
+        "start": 9,
+        "end": 29
+      }
+    ]
+  },
+  {
+    "text": "Ela se se olhou no espelho.",
+    "expected": []
+  },
+  {
+    "text": "Ele e eu fomos juntos.",
+    "expected": []
+  },
+  {
+    "text": "Para mim fazer isso, preciso de tempo.",
+    "expected": [
+      {
+        "rule": "concordancia-para-mim-infinitivo",
+        "start": 0,
+        "end": 8
+      }
+    ]
+  },
+  {
+    "text": "Eu vi ela ontem na praça.",
+    "expected": [
+      {
+        "rule": "estilo-pronome-reto-objeto",
+        "start": 0,
+        "end": 9
+      }
+    ]
+  }
+]

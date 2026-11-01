@@ -1,0 +1,14 @@
+* text=auto eol=lf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.png binary
+*.pdf binary
+*.wasm binary
+*.docx binary
+*.epub binary
+*.serifa linguist-language=JSON
+# dicionário VERO (Hunspell), distribuído sem modificação
+web/dicionario/** linguist-vendored
+web/wasm/*.wasm linguist-generated
+docs/** linguist-documentation

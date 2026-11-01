@@ -1,0 +1,14 @@
+{
+  "name": "serifa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Serifa: editor para escritores de livros e fanfics, com exportação para Wattpad e AO3.",
+  "type": "module",
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test tests/js/*.test.mjs native/tests/*.test.mjs",
+    "build:wasm": "bash scripts/build-wasm.sh",
+    "build:pdfs": "node scripts/build-pdfs.js"
+  }
+}
